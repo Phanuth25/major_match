@@ -1,0 +1,25 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: './private/.env' });
+
+import express from 'express';
+import cors from 'cors';
+const app = express();
+
+// Import Routes
+import authRoutes from './private/routes/authRoutes.js';
+
+const PORT = process.env.PORT || 3000;
+
+// Improved CORS configuration
+app.use(cors({
+  origin: '*', // Allow all origins for development
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With','ngrok-skip-browser-warning']
+}));
+
+app.use(express.json());
+
+// Use Routes
+app.use('/api', authRoutes);
+
+app.listen(PORT, () => console.log('Server started on port 3000'));
