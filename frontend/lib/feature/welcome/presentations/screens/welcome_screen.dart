@@ -240,7 +240,7 @@ class _Actions extends StatelessWidget {
         SizedBox(
           height: 48,
           child: OutlinedButton(
-            onPressed: onLogin,
+            onPressed: () => Get.toNamed('/login'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.parchment,
               side: BorderSide(color: AppColors.hairline()),
