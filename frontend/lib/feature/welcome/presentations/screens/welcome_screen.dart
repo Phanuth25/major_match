@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
+import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
 
 import '../widgets/compass_widget.dart';
 
@@ -18,11 +20,7 @@ import '../widgets/compass_widget.dart';
 /// never overflows on short screens (e.g. a phone in landscape) and
 /// respects notches/status bars on iOS and Android.
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({
-    super.key,
-    this.onGetStarted,
-    this.onLogin,
-  });
+  const WelcomeScreen({super.key, this.onGetStarted, this.onLogin});
 
   /// Called when the student taps "Get started". Wire this to the
   /// major-selection route once that screen exists.
@@ -58,9 +56,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: isWide ? 960 : 440,
-                    ),
+                    constraints: BoxConstraints(maxWidth: isWide ? 960 : 440),
                     child: isWide
                         ? _WideLayout(
                             onGetStarted: onGetStarted,
@@ -178,8 +174,9 @@ class _Headline extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextAlign align = alignStart ? TextAlign.left : TextAlign.center;
     return Column(
-      crossAxisAlignment:
-          alignStart ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: alignStart
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         Text(
           'Find the major\nthat fits you.',
@@ -208,11 +205,7 @@ class _Headline extends StatelessWidget {
 }
 
 class _Actions extends StatelessWidget {
-  const _Actions({
-    this.onGetStarted,
-    this.onLogin,
-    this.alignStart = false,
-  });
+  const _Actions({this.onGetStarted, this.onLogin, this.alignStart = false});
 
   final VoidCallback? onGetStarted;
   final VoidCallback? onLogin;
@@ -221,13 +214,14 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Widget buttons = Column(
-      crossAxisAlignment:
-          alignStart ? CrossAxisAlignment.start : CrossAxisAlignment.stretch,
+      crossAxisAlignment: alignStart
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.stretch,
       children: [
         SizedBox(
           height: 48,
           child: ElevatedButton(
-            onPressed: onGetStarted,
+            onPressed: () => Get.to(() => RegisterScreen()),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.amber,
               foregroundColor: AppColors.ink,

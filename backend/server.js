@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import pool from "./config/db.js";
+import registerRoute from "./route/register_route.js";
+import loginRoute from "./route/login_route.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +31,9 @@ app.get("/", (req, res) => {
     message: "Express backend (ES Modules) is running smoothly!",
   });
 });
+
+app.use("/api", registerRoute);
+app.use("/api", loginRoute);
 
 // Catch-all 404 handler
 app.use((req, res) => {

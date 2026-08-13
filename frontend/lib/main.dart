@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:major_match2/core/theme/app_color.dart';
-import 'package:major_match2/feature/welcome/presentation/screens/welcome_screen.dart';
-
-
+import 'package:major_match2/feature/welcome/presentations/screens/welcome_screen.dart';
+import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
+import 'package:get_x/get.dart';
 
 void main() {
   runApp(const MajorMatchApp());
@@ -13,24 +13,25 @@ class MajorMatchApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'MajorMatch',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.ink,
-      
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.amber,
           brightness: Brightness.dark,
         ),
       ),
-      home: WelcomeScreen(
-        // TODO(sprint-2): replace with Navigator.pushNamed once the
-        // major-selection and login routes exist.
-        onGetStarted: () => debugPrint('Get started tapped'),
-        onLogin: () => debugPrint('Login tapped'),
-      ),
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => WelcomeScreen()),
+        GetPage(name: '/register', page: () => RegisterScreen()),
+        // GetPage(name: '/login', page: () => LoginScreen()),
+        // Add every other screen you navigate to here, e.g.:
+        // GetPage(name: '/login', page: () => LoginScreen()),
+      ],
     );
   }
 }

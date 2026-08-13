@@ -13,6 +13,8 @@ class AppColors {
   static const Color parchment = Color(0xFFF5EFE0); // primary text on ink
   static const Color amber = Color(0xFFE8A33D); // primary action / accent
   static const Color sage = Color(0xFF7C9885); // quiet secondary accent
+  static const Color error = Color(0xFFE0776B); // validation / error states
+  static const Color fieldFill = inkLight; // input/card fill on ink
 
   /// Parchment at reduced opacity, used for supporting/body text on ink.
   static Color parchmentMuted({double opacity = 0.6}) =>
