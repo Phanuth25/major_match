@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success && mounted) {
-      Navigator.of(context).pop();
+      Get.offAllNamed('/select'); // Navigate to the select screen after successful login
     }
   }
 

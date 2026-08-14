@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { register } from "../controller/authentications/register_controller.js";
+import { register } from "../../controller/authentications/register_controller.js";
 
 const router = express.Router();
 

@@ -2,8 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import pool from "./config/db.js";
-import registerRoute from "./route/register_route.js";
-import loginRoute from "./route/login_route.js";
+import registerRoute from "./route/authentications/register_route.js";
+import loginRoute from "./route/authentications/login_route.js";
+import selectRoute from "./route/majors/select_route.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 
 app.use("/api", registerRoute);
 app.use("/api", loginRoute);
+app.use("/api", selectRoute);
 
 // Catch-all 404 handler
 app.use((req, res) => {
