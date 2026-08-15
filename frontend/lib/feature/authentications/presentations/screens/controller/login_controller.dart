@@ -9,32 +9,31 @@ class LoginController extends GetxController {
   final errormessage = ''.obs;
   final successmessage = ''.obs;
   final UserId = ''.obs; // Reactive variable to hold the user ID
-  Future<bool> Login({required String name,
+  Future<bool> Login({
+    required String name,
     required String email,
-    required String password,}) async {
+    required String password,
+  }) async {
     try {
       isLoading.value = true;
-       final data = {
-      'email': email,
-      'password': password,
-    };
+      final data = {'email': email, 'password': password};
       final response = await ApiClient.instance.post('/login', data: data);
 
       if (response.statusCode == 200) {
         successmessage.value = 'Login successfully';
         UserId.value = response.data['user'].toString(); // Store the user ID
-        await LocalStorageService(Get.find()).saveUserId(UserId.value); // Save the user ID to local storage
+        await Get.find<StorageService>().saveUserId(UserId.value);
         return true;
       } else {
         errormessage.value = 'Login failed: ${response.statusCode}';
         return false;
       }
-    } 
-     on DioException catch (e) {
-      errormessage.value = e.response?.data?.toString() ?? e.message ?? 'Something went wrong';
+    } on DioException catch (e) {
+      errormessage.value =
+          e.response?.data?.toString() ?? e.message ?? 'Something went wrong';
       debugPrint('DioError: ${e.message}');
       return false;
-    }catch (e) {
+    } catch (e) {
       debugPrint('Error: $e');
       return false;
     } finally {

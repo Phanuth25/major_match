@@ -43,7 +43,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success && mounted) {
-      Get.offAllNamed('/select'); // Navigate to the select screen after successful login
+      Get.offAllNamed(
+        '/select',
+      ); // Navigate to the select screen after successful login
     }
   }
 
@@ -57,20 +59,32 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              onPressed: () => Navigator.maybeOf(context)?.maybePop(),
+              onPressed: () => Get.back(),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              icon: const Icon(Icons.arrow_back, color: AppColors.parchment, size: 22),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.parchment,
+                size: 22,
+              ),
             ),
             const SizedBox(height: 24),
             const Text(
               'Welcome back',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w500, color: AppColors.parchment),
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w500,
+                color: AppColors.parchment,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'Log in to see your saved recommendations.',
-              style: TextStyle(fontSize: 14, height: 1.5, color: AppColors.parchmentMuted()),
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.5,
+                color: AppColors.parchmentMuted(),
+              ),
             ),
             const SizedBox(height: 28),
 
@@ -93,8 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
               hintText: 'Enter your password',
               obscureText: true,
               textInputAction: TextInputAction.done,
-              validator: (value) =>
-                  (value == null || value.isEmpty) ? 'Enter your password.' : null,
+              validator: (value) => (value == null || value.isEmpty)
+                  ? 'Enter your password.'
+                  : null,
               onChanged: (_) => _passwordFieldKey.currentState?.validate(),
             ),
 
@@ -103,27 +118,46 @@ class _LoginScreenState extends State<LoginScreen> {
               if (error.isEmpty) return const SizedBox.shrink();
               return Padding(
                 padding: const EdgeInsets.only(top: 16),
-                child: Text(error, style: const TextStyle(color: AppColors.error, fontSize: 13)),
+                child: Text(
+                  error,
+                  style: const TextStyle(color: AppColors.error, fontSize: 13),
+                ),
               );
             }),
 
             const SizedBox(height: 28),
-            Obx(() => AppPrimaryButton(
-                  label: widget.controller.isLoading.value ? 'Logging in...' : 'Log in',
-                  onPressed: widget.controller.isLoading.value ? null : _handleSubmit,
-                )),
+            Obx(
+              () => AppPrimaryButton(
+                label: widget.controller.isLoading.value
+                    ? 'Logging in...'
+                    : 'Log in',
+                onPressed: widget.controller.isLoading.value
+                    ? null
+                    : _handleSubmit,
+              ),
+            ),
             const SizedBox(height: 20),
 
             Center(
               child: Wrap(
                 alignment: WrapAlignment.center,
                 children: [
-                  Text("Don't have an account? ", style: TextStyle(fontSize: 13, color: AppColors.parchmentMuted())),
+                  Text(
+                    "Don't have an account? ",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.parchmentMuted(),
+                    ),
+                  ),
                   GestureDetector(
                     onTap: widget.onRegister,
                     child: const Text(
                       'Sign up',
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.amber),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.amber,
+                      ),
                     ),
                   ),
                 ],

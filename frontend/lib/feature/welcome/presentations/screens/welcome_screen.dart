@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
+import 'package:major_match2/core/services/local_storage.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
 
@@ -213,6 +214,7 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userId = Get.find<StorageService>().getUserId();
     final Widget buttons = Column(
       crossAxisAlignment: alignStart
           ? CrossAxisAlignment.start
@@ -240,7 +242,13 @@ class _Actions extends StatelessWidget {
         SizedBox(
           height: 48,
           child: OutlinedButton(
-            onPressed: () => Get.toNamed('/login'),
+            onPressed: () {
+              if ((userId ?? '').isNotEmpty) {
+                Get.toNamed('/select');
+              } else {
+                Get.toNamed('/login');
+              }
+            },
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.parchment,
               side: BorderSide(color: AppColors.hairline()),
@@ -248,8 +256,10 @@ class _Actions extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: const Text(
-              'I already have an account',
+            child: Text(
+              userId != null && userId.isNotEmpty
+                  ? 'Continue'
+                  : 'I already have an account',
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ),

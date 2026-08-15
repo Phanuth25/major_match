@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get_x/get.dart';
+import 'package:major_match2/core/services/local_storage.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/login_screen.dart';
+import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
 import 'package:major_match2/feature/major/presentation/screen/select_screen.dart';
 import 'package:major_match2/feature/welcome/presentations/screens/welcome_screen.dart';
-import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
-import 'package:get_x/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+  Get.put(StorageService(prefs));
+
   runApp(const MajorMatchApp());
 }
 
