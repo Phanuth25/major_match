@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/services/local_storage.dart';
 import 'package:major_match2/core/theme/app_color.dart';
+import 'package:major_match2/feature/authentications/presentations/screens/controller/login_controller.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/login_screen.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
 import 'package:major_match2/feature/major/presentation/screen/select_screen.dart';
@@ -13,6 +14,10 @@ Future<void> main() async {
 
   final prefs = await SharedPreferences.getInstance();
   Get.put(StorageService(prefs));
+  Get.put(LoginController());
+
+  // Load saved userId
+  await Get.find<LoginController>().loadSavedUserId();
 
   runApp(const MajorMatchApp());
 }
@@ -33,15 +38,22 @@ class MajorMatchApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      initialRoute: '/',
+      home: _getInitialScreen(),
       getPages: [
         GetPage(name: '/', page: () => WelcomeScreen()),
         GetPage(name: '/register', page: () => RegisterScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/select', page: () => Select()),
-        // Add every other screen you navigate to here, e.g.:
-        // GetPage(name: '/login', page: () => LoginScreen()),
       ],
     );
+  }
+
+  Widget _getInitialScreen() {
+    final userId = Get.find<StorageService>().getUserId();
+    if (userId != null && userId.isNotEmpty) {
+      return Select();
+    } else {
+      return WelcomeScreen();
+    }
   }
 }

@@ -43,9 +43,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success && mounted) {
-      Get.offAllNamed(
-        '/select',
-      ); // Navigate to the select screen after successful login
+       Get.snackbar(
+        'Success',
+        widget.controller.successmessage.value,
+        snackPosition: SnackPosition.values.last,
+        backgroundColor: AppColors.amber,
+        colorText: Colors.white,
+      );
+ // Navigate to the select screen after successful login
+      Get.toNamed('/select');
+    } else {
+      Get.snackbar(
+        'Error',
+        widget.controller.errormessage.value,
+        snackPosition: SnackPosition.values.last,
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
     }
   }
 

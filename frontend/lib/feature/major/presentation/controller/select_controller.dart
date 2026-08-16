@@ -1,4 +1,5 @@
 
+import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:get_x/get_state_manager/src/simple/get_controllers.dart';
 import 'package:major_match2/core/services/dio_client.dart';
@@ -33,6 +34,7 @@ class MajorController extends GetxController {
 
         // 2. Update reactive list
         majors.assignAll(selectModel.majors);
+        debugPrint('Majors loaded: ${majors.length}');
         successMessage('Majors loaded successfully');
       } else {
         errorMessage('Server error: ${response.statusCode}');

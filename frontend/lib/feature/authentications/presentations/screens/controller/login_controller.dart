@@ -9,6 +9,20 @@ class LoginController extends GetxController {
   final errormessage = ''.obs;
   final successmessage = ''.obs;
   final UserId = ''.obs; // Reactive variable to hold the user ID
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadSavedUserId();
+  }
+
+  Future<void> loadSavedUserId() async {
+    final savedUserId = Get.find<StorageService>().getUserId();
+    if (savedUserId != null && savedUserId.isNotEmpty) {
+      UserId.value = savedUserId;
+    }
+  }
+
   Future<bool> Login({
     required String name,
     required String email,

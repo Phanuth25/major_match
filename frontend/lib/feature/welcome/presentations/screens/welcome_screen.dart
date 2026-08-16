@@ -3,6 +3,7 @@ import 'package:get_x/get.dart';
 import 'package:major_match2/core/services/local_storage.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
+import 'package:major_match2/feature/authentications/presentations/screens/controller/login_controller.dart';
 
 import '../widgets/compass_widget.dart';
 
@@ -214,64 +215,70 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userId = Get.find<StorageService>().getUserId();
-    final Widget buttons = Column(
-      crossAxisAlignment: alignStart
-          ? CrossAxisAlignment.start
-          : CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          height: 48,
-          child: ElevatedButton(
-            onPressed: () => Get.to(() => RegisterScreen()),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.amber,
-              foregroundColor: AppColors.ink,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: const Text(
-              'Get started',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 48,
-          child: OutlinedButton(
-            onPressed: () {
-              if ((userId ?? '').isNotEmpty) {
-                Get.toNamed('/select');
-              } else {
-                Get.toNamed('/login');
-              }
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.parchment,
-              side: BorderSide(color: AppColors.hairline()),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: Text(
-              userId != null && userId.isNotEmpty
-                  ? 'Continue'
-                  : 'I already have an account',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-            ),
-          ),
-        ),
-      ],
-    );
+    return Obx(() {
+      final loginController = Get.find<LoginController>();
+      final userId = loginController.UserId.value.isNotEmpty
+          ? loginController.UserId.value
+          : Get.find<StorageService>().getUserId();
 
-    // Cap button width so they don't stretch edge-to-edge on wide/desktop
-    // screens while still filling the column on phone.
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      child: buttons,
-    );
+      final Widget buttons = Column(
+        crossAxisAlignment: alignStart
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 48,
+            child: ElevatedButton(
+              onPressed: () => Get.to(() => RegisterScreen()),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.amber,
+                foregroundColor: AppColors.ink,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Get started',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 48,
+            child: OutlinedButton(
+              onPressed: () {
+                if ((userId ?? '').isNotEmpty) {
+                  Get.toNamed('/select');
+                } else {
+                  Get.toNamed('/login');
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.parchment,
+                side: BorderSide(color: AppColors.hairline()),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                userId != null && userId.isNotEmpty
+                    ? 'Continue'
+                    : 'I already have an account',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+        ],
+      );
+
+      // Cap button width so they don't stretch edge-to-edge on wide/desktop
+      // screens while still filling the column on phone.
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: buttons,
+      );
+    });
   }
 }
