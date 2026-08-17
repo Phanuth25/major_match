@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
+import 'package:major_match2/core/services/local_storage.dart';
 import 'package:major_match2/feature/major/presentation/controller/select_controller.dart';
 
 import '../../../../shared/widgets/app_primary_button.dart';
@@ -41,39 +42,55 @@ class _SelectState extends State<Select> {
             children: [
               const Text(
                 'Select your majors',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w500, color: AppColors.parchment),
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.parchment,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Choose 2 to 5 majors you\'re curious about. We\'ll only ask questions about these.',
-                style: TextStyle(fontSize: 14, height: 1.5, color: AppColors.parchmentMuted()),
+                'Choose majors you\'re curious about. We\'ll only ask questions about these.',
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: AppColors.parchmentMuted(),
+                ),
               ),
               const SizedBox(height: 24),
 
               Expanded(
                 child: Obx(() {
                   if (widget.controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.amber));
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppColors.amber),
+                    );
                   }
                   if (widget.controller.errorMessage.isNotEmpty) {
                     return Center(
-                      child: Text(widget.controller.errorMessage.value,
-                          style: const TextStyle(color: AppColors.error)),
+                      child: Text(
+                        widget.controller.errorMessage.value,
+                        style: const TextStyle(color: AppColors.error),
+                      ),
                     );
                   }
                   if (widget.controller.majors.isEmpty) {
                     return Center(
-                      child: Text('No majors available.', style: TextStyle(color: AppColors.parchmentMuted())),
+                      child: Text(
+                        'No majors available.',
+                        style: TextStyle(color: AppColors.parchmentMuted()),
+                      ),
                     );
                   }
 
                   return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 2.3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 2.3,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
                     itemCount: widget.controller.majors.length,
                     itemBuilder: (context, index) {
                       final major = widget.controller.majors[index];
@@ -83,10 +100,14 @@ class _SelectState extends State<Select> {
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.amber.withOpacity(0.12) : AppColors.fieldFill,
+                            color: isSelected
+                                ? AppColors.amber.withOpacity(0.12)
+                                : AppColors.fieldFill,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected ? AppColors.amber : AppColors.hairline(opacity: 0.2),
+                              color: isSelected
+                                  ? AppColors.amber
+                                  : AppColors.hairline(opacity: 0.2),
                               width: isSelected ? 1.4 : 1,
                             ),
                           ),
@@ -96,7 +117,9 @@ class _SelectState extends State<Select> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: isSelected ? AppColors.amber : AppColors.parchment,
+                                color: isSelected
+                                    ? AppColors.amber
+                                    : AppColors.parchment,
                               ),
                             ),
                           ),
@@ -108,17 +131,29 @@ class _SelectState extends State<Select> {
               ),
 
               const SizedBox(height: 16),
-              Text('${_selected.length} / 5 selected',
-                  style: TextStyle(fontSize: 13, color: AppColors.parchmentMuted())),
+              Text(
+                '${_selected.length} / ${widget.controller.majors.length}',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.parchmentMuted(),
+                ),
+              ),
               const SizedBox(height: 12),
               AppPrimaryButton(
                 label: 'Continue',
-                onPressed: canContinue ? () => Get.toNamed('/quiz', arguments: _selected.toList()) : null,
+                onPressed: canContinue
+                    ? () async {
+                        await Get.find<StorageService>().saveSelectedMajors(
+                          _selected,
+                        );
+                        Get.toNamed('/home', arguments: _selected.toList());
+                      }
+                    : null,
               ),
             ],
           ),
         ),
-      ), 
+      ),
     );
   }
 }

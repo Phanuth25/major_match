@@ -34,6 +34,7 @@ export function login(req, res) {
     return res.status(200).json({
       message: "Login successful",
       user: user.id,
+      name: user.name,
     });
   });
 }

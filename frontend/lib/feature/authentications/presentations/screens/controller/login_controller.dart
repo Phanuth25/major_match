@@ -9,6 +9,7 @@ class LoginController extends GetxController {
   final errormessage = ''.obs;
   final successmessage = ''.obs;
   final UserId = ''.obs; // Reactive variable to hold the user ID
+  final Username = ''.obs;
 
   @override
   void onInit() {
@@ -36,7 +37,9 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         successmessage.value = 'Login successfully';
         UserId.value = response.data['user'].toString(); // Store the user ID
+        Username.value = response.data['name'].toString(); // Store the user name
         await Get.find<StorageService>().saveUserId(UserId.value);
+        await Get.find<StorageService>().saveUsername(Username.value);
         return true;
       } else {
         errormessage.value = 'Login failed: ${response.statusCode}';

@@ -5,6 +5,7 @@ import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/controller/login_controller.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/login_screen.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
+import 'package:major_match2/feature/home/presentations/screen/home_screen.dart';
 import 'package:major_match2/feature/major/presentation/screen/select_screen.dart';
 import 'package:major_match2/feature/welcome/presentations/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +45,7 @@ class MajorMatchApp extends StatelessWidget {
         GetPage(name: '/register', page: () => RegisterScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/select', page: () => Select()),
+        GetPage(name: '/home', page: () => HomeScreen(userName: Get.find<LoginController>().Username.value, selectedMajors: Get.find<StorageService>().getSelectedMajors())),
       ],
     );
   }
