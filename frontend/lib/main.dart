@@ -7,6 +7,7 @@ import 'package:major_match2/feature/authentications/presentations/screens/login
 import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
 import 'package:major_match2/feature/home/presentations/screen/home_screen.dart';
 import 'package:major_match2/feature/major/presentation/screen/select_screen.dart';
+import 'package:major_match2/feature/questions/presentaions/controllers/question_controller.dart';
 import 'package:major_match2/feature/welcome/presentations/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,9 +17,11 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   Get.put(StorageService(prefs));
   Get.put(LoginController());
+  Get.put(QuestionController());
 
   // Load saved userId
   await Get.find<LoginController>().loadSavedUserId();
+
 
   runApp(const MajorMatchApp());
 }
@@ -46,6 +49,7 @@ class MajorMatchApp extends StatelessWidget {
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/select', page: () => Select()),
         GetPage(name: '/home', page: () => HomeScreen(userName: Get.find<LoginController>().Username.value, selectedMajors: Get.find<StorageService>().getSelectedMajors())),
+        
       ],
     );
   }

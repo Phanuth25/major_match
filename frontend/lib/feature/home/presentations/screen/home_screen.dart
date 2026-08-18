@@ -61,7 +61,9 @@ class HomeScreen extends StatelessWidget {
                         style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: AppColors.parchment)),
                     const SizedBox(height: 14),
                     ElevatedButton(
-                      onPressed: onStartQuiz,
+                      onPressed:() {
+                        
+                      }  ,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.amber,
                         foregroundColor: AppColors.ink,
