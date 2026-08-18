@@ -5,6 +5,7 @@ import pool from "./config/db.js";
 import registerRoute from "./route/authentications/register_route.js";
 import loginRoute from "./route/authentications/login_route.js";
 import selectRoute from "./route/majors/select_route.js";
+import questionRoute from "./route/questions/question_route.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api", registerRoute);
 app.use("/api", loginRoute);
 app.use("/api", selectRoute);
+app.use("/api", questionRoute);
 
 // Catch-all 404 handler
 app.use((req, res) => {
