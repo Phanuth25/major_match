@@ -78,6 +78,7 @@ class _QuizScreenState extends State<QuizScreen> {
     final scores = _answers.map(
       (questionId, label) => MapEntry(questionId, kAnswerScale[label]!),
     );
+    debugPrint('Final scores: $scores');
     Navigator.pop(context, scores);
   }
   /* END: sequential major quiz changes */
