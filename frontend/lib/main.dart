@@ -22,7 +22,6 @@ Future<void> main() async {
   // Load saved userId
   await Get.find<LoginController>().loadSavedUserId();
 
-
   runApp(const MajorMatchApp());
 }
 
@@ -48,8 +47,27 @@ class MajorMatchApp extends StatelessWidget {
         GetPage(name: '/register', page: () => RegisterScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/select', page: () => Select()),
-        GetPage(name: '/home', page: () => HomeScreen(userName: Get.find<LoginController>().Username.value, selectedMajors: Get.find<StorageService>().getSelectedMajors())),
-        
+        GetPage(
+          name: '/home',
+          page: () {
+            final storage = Get.find<StorageService>();
+            final arguments = Get.arguments is Map
+                ? Get.arguments as Map
+                : null;
+            final names = arguments?['names'];
+            final ids = arguments?['ids'];
+
+            return HomeScreen(
+              userName: Get.find<LoginController>().Username.value,
+              selectedMajors: names is List
+                  ? List<String>.from(names)
+                  : storage.getSelectedMajors(),
+              majorIds: ids is List
+                  ? List<int>.from(ids)
+                  : storage.getSelectedMajorIds(),
+            );
+          },
+        ),
       ],
     );
   }

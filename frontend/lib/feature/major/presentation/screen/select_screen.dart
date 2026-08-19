@@ -143,10 +143,23 @@ class _SelectState extends State<Select> {
                 label: 'Continue',
                 onPressed: canContinue
                     ? () async {
+                        final selectedMajorIds = widget.controller.majors
+                            .where((major) => _selected.contains(major.name))
+                            .map((major) => major.id)
+                            .toList();
                         await Get.find<StorageService>().saveSelectedMajors(
                           _selected,
                         );
-                        Get.toNamed('/home', arguments: _selected.toList());
+                        await Get.find<StorageService>().saveSelectedMajorIds(
+                          selectedMajorIds,
+                        );
+                        Get.toNamed(
+                          '/home',
+                          arguments: {
+                            'names': _selected.toList(),
+                            'ids': selectedMajorIds,
+                          },
+                        );
                       }
                     : null,
               ),

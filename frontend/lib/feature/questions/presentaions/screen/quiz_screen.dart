@@ -27,31 +27,60 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  final List<Question> _allQuestions = [];
+  /* BEGIN: sequential major quiz changes */
+  final List<Question> _currentQuestions = [];
   final Map<int, String> _answers = {}; // questionId -> chosen label
+  int _currentMajorIndex = 0;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadQuestions();
+    _loadCurrentMajor();
   }
 
-  Future<void> _loadQuestions() async {
-    for (final id in widget.majorIds) {
-      await widget.controller.fetchQuestionById(id);
-      _allQuestions.addAll(widget.controller.questions);
+  Future<void> _loadCurrentMajor() async {
+    if (widget.majorIds.isEmpty) {
+      if (mounted) {
+        Navigator.pop(context, <int, int>{});
+      }
+      return;
     }
-    setState(() => _isLoading = false);
+
+    setState(() {
+      _isLoading = true;
+      _currentQuestions.clear();
+    });
+
+    final majorId = widget.majorIds[_currentMajorIndex];
+    await widget.controller.fetchQuestionById(majorId);
+
+    if (!mounted) return;
+
+    setState(() {
+      _currentQuestions.addAll(widget.controller.questions);
+      _isLoading = false;
+    });
   }
 
-  bool get _allAnswered => _answers.length == _allQuestions.length;
+  bool get _currentMajorAnswered =>
+      _currentQuestions.every((question) => _answers.containsKey(question.id));
 
-  void _submit() {
-    // Convert selected labels to scores right before handing off.
-    final scores = _answers.map((questionId, label) => MapEntry(questionId, kAnswerScale[label]!));
+  Future<void> _submitCurrentMajor() async {
+    if (_currentMajorIndex < widget.majorIds.length - 1) {
+      setState(() {
+        _currentMajorIndex++;
+      });
+      await _loadCurrentMajor();
+      return;
+    }
+
+    final scores = _answers.map(
+      (questionId, label) => MapEntry(questionId, kAnswerScale[label]!),
+    );
     Navigator.pop(context, scores);
   }
+  /* END: sequential major quiz changes */
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +88,9 @@ class _QuizScreenState extends State<QuizScreen> {
       backgroundColor: AppColors.ink,
       body: SafeArea(
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator(color: AppColors.amber))
+            ? const Center(
+                child: CircularProgressIndicator(color: AppColors.amber),
+              )
             : Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -67,35 +98,61 @@ class _QuizScreenState extends State<QuizScreen> {
                   children: [
                     const Text(
                       'Answer honestly',
-                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.w500, color: AppColors.parchment),
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.parchment,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'There are no right or wrong answers.',
-                      style: TextStyle(fontSize: 14, color: AppColors.parchmentMuted()),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.parchmentMuted(),
+                      ),
                     ),
                     const SizedBox(height: 20),
+                    /* BEGIN: sequential major quiz changes */
+                    Text(
+                      'Major ${_currentMajorIndex + 1} of ${widget.majorIds.length}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.parchmentMuted(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
 
+                    /* END: sequential major quiz changes */
                     Expanded(
                       child: ListView.separated(
-                        itemCount: _allQuestions.length,
+                        /* BEGIN: sequential major quiz changes */
+                        itemCount: _currentQuestions.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 20),
                         itemBuilder: (context, index) {
-                          final question = _allQuestions[index];
+                          final question = _currentQuestions[index];
                           return _QuestionCard(
                             question: question.question,
                             selectedLabel: _answers[question.id],
-                            onSelect: (label) => setState(() => _answers[question.id] = label),
+                            onSelect: (label) =>
+                                setState(() => _answers[question.id] = label),
                           );
                         },
+                        /* END: sequential major quiz changes */
                       ),
                     ),
 
                     const SizedBox(height: 12),
+                    /* BEGIN: sequential major quiz changes */
                     AppPrimaryButton(
-                      label: 'Submit',
-                      onPressed: _allAnswered ? _submit : null,
+                      label: _currentMajorIndex == widget.majorIds.length - 1
+                          ? 'Submit'
+                          : 'Next major',
+                      onPressed: _currentMajorAnswered
+                          ? _submitCurrentMajor
+                          : null,
                     ),
+                    /* END: sequential major quiz changes */
                   ],
                 ),
               ),
@@ -105,7 +162,11 @@ class _QuizScreenState extends State<QuizScreen> {
 }
 
 class _QuestionCard extends StatelessWidget {
-  const _QuestionCard({required this.question, required this.selectedLabel, required this.onSelect});
+  const _QuestionCard({
+    required this.question,
+    required this.selectedLabel,
+    required this.onSelect,
+  });
 
   final String question;
   final String? selectedLabel;
@@ -115,11 +176,21 @@ class _QuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: AppColors.fieldFill, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: AppColors.fieldFill,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(question, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.parchment)),
+          Text(
+            question,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: AppColors.parchment,
+            ),
+          ),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -127,7 +198,13 @@ class _QuestionCard extends StatelessWidget {
             children: kAnswerScale.keys.map((label) {
               final isSelected = selectedLabel == label;
               return ChoiceChip(
-                label: Text(label, style: TextStyle(fontSize: 12, color: isSelected ? AppColors.ink : AppColors.parchment)),
+                label: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isSelected ? AppColors.ink : AppColors.parchment,
+                  ),
+                ),
                 selected: isSelected,
                 onSelected: (_) => onSelect(label),
                 backgroundColor: AppColors.ink,
