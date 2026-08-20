@@ -3,6 +3,7 @@ import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/questions/model/question_model.dart';
 import 'package:major_match2/feature/questions/presentaions/controllers/question_controller.dart';
+import 'package:major_match2/feature/questions/presentaions/controllers/select_controller.dart';
 
 import '../../../../shared/widgets/app_primary_button.dart';
 
@@ -21,6 +22,7 @@ class QuizScreen extends StatefulWidget {
 
   final List<int> majorIds;
   final QuestionController controller = Get.put(QuestionController());
+  final SelectController scoreController = Get.put(SelectController());
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -74,12 +76,29 @@ class _QuizScreenState extends State<QuizScreen> {
       await _loadCurrentMajor();
       return;
     }
-
+    //here we are at the last major, so we submit the scores
     final scores = _answers.map(
       (questionId, label) => MapEntry(questionId, kAnswerScale[label]!),
     );
     debugPrint('Final scores: $scores');
-    Navigator.pop(context, scores);
+
+    setState(() => _isLoading = true);
+    final majorScores = await widget.scoreController.submitScores(
+      questionIds: scores.keys.toList(),
+      scores: scores,
+    );
+
+    if (!mounted) return;
+
+    if (majorScores == null) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(widget.scoreController.errorMessage.value)),
+      );
+      return;
+    }
+
+    Navigator.pop(context, majorScores);
   }
   /* END: sequential major quiz changes */
 
