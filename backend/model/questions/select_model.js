@@ -2,7 +2,7 @@ import pool from "../../config/db.js";
 
 const SelectModel = {
   selectByIds: (ids, callback) => {
-    const sql = "SELECT * FROM questions WHERE id IN (?)";
+    const sql = "SELECT id,major_id FROM questions WHERE major_id IN (?)";
     pool.query(sql, [ids], callback);
   },
 };
