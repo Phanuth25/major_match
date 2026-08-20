@@ -3,7 +3,7 @@ import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/questions/presentaions/screen/quiz_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     required this.userName,
@@ -20,6 +20,30 @@ class HomeScreen extends StatelessWidget {
   final String? recentMajor;
   final int? recentScore;
   final VoidCallback? onStartQuiz;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Map<int, int> _majorScores = {};
+
+  Future<void> _startQuiz() async {
+    final result = await Get.to<Map<int, int>>(
+      () => QuizScreen(majorIds: widget.majorIds),
+    );
+
+    if (result != null && mounted) {
+      setState(() => _majorScores = result);
+    }
+  }
+
+  String _majorName(int majorId) {
+    final index = widget.majorIds.indexOf(majorId);
+    return index >= 0 && index < widget.selectedMajors.length
+        ? widget.selectedMajors[index]
+        : 'Major $majorId';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        userName,
+                        widget.userName,
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -87,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Take the quiz for your ${selectedMajors.length} majors',
+                      'Take the quiz for your ${widget.selectedMajors.length} majors',
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -96,8 +120,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     ElevatedButton(
-                      onPressed: () =>
-                          Get.to(() => QuizScreen(majorIds: majorIds)),
+                      onPressed: _startQuiz,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.amber,
                         foregroundColor: AppColors.ink,
@@ -127,7 +150,7 @@ class HomeScreen extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: selectedMajors
+                children: widget.selectedMajors
                     .map(
                       (m) => Chip(
                         label: Text(
@@ -145,20 +168,19 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 22),
 
-              // Recent result
-              Text(
-                'RECENT RESULT',
+              const Text(
+                'MAJOR SCORES',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
-                  color: AppColors.parchmentMuted(),
+                  color: AppColors.parchment,
                 ),
               ),
               const SizedBox(height: 10),
-              if (recentMajor == null)
+              if (_majorScores.isEmpty)
                 Text(
-                  'No quiz results yet.',
+                  'Complete the quiz to see your scores.',
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.parchmentMuted(),
@@ -166,33 +188,92 @@ class HomeScreen extends StatelessWidget {
                 )
               else
                 Container(
-                  padding: const EdgeInsets.all(14),
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: AppColors.fieldFill,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        recentMajor!,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.parchment,
+                  child: Column(
+                    children: _majorScores.entries.map((entry) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
                         ),
-                      ),
-                      Text(
-                        '$recentScore%',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.amber,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _majorName(entry.key),
+                              style: const TextStyle(
+                                color: AppColors.parchment,
+                              ),
+                            ),
+                            Text(
+                              '${entry.value} points',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.amber,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      );
+                    }).toList(),
                   ),
                 ),
+              const SizedBox(height: 22),
+
+              // if (_majorScores.isEmpty) ...[
+              //   // Recent result
+              //   Text(
+              //     'RECENT RESULT',
+              //     style: TextStyle(
+              //       fontSize: 12,
+              //       fontWeight: FontWeight.w600,
+              //       letterSpacing: 0.5,
+              //       color: AppColors.parchmentMuted(),
+              //     ),
+              //   ),
+              //   const SizedBox(height: 10),
+              //   if (widget.recentMajor == null)
+              //     Text(
+              //       'No quiz results yet.',
+              //       style: TextStyle(
+              //         fontSize: 13,
+              //         color: AppColors.parchmentMuted(),
+              //       ),
+              //     )
+              //   else
+              //     Container(
+              //       padding: const EdgeInsets.all(14),
+              //       decoration: BoxDecoration(
+              //         color: AppColors.fieldFill,
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Text(
+              //             widget.recentMajor!,
+              //             style: const TextStyle(
+              //               fontSize: 13,
+              //               fontWeight: FontWeight.w500,
+              //               color: AppColors.parchment,
+              //             ),
+              //           ),
+              //           Text(
+              //             '${widget.recentScore}%',
+              //             style: const TextStyle(
+              //               fontSize: 15,
+              //               fontWeight: FontWeight.w600,
+              //               color: AppColors.amber,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              // ],
             ],
           ),
         ),
