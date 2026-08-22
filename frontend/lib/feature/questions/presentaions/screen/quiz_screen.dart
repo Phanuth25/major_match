@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
@@ -34,11 +36,34 @@ class _QuizScreenState extends State<QuizScreen> {
   final Map<int, String> _answers = {}; // questionId -> chosen label
   int _currentMajorIndex = 0;
   bool _isLoading = true;
+  int _elapsedSeconds = 0;
+  Timer? _quizTimer;
 
   @override
   void initState() {
     super.initState();
+    _startQuizTimer();
     _loadCurrentMajor();
+  }
+
+  @override
+  void dispose() {
+    _quizTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startQuizTimer() {
+    _quizTimer?.cancel();
+    _quizTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() => _elapsedSeconds++);
+    });
+  }
+
+  String get _formattedElapsedTime {
+    final minutes = (_elapsedSeconds ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_elapsedSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 
   Future<void> _loadCurrentMajor() async {
@@ -83,9 +108,12 @@ class _QuizScreenState extends State<QuizScreen> {
     debugPrint('Final scores: $scores');
 
     setState(() => _isLoading = true);
+    _quizTimer?.cancel();
+
     final majorScores = await widget.scoreController.submitScores(
       questionIds: scores.keys.toList(),
       scores: scores,
+      elapsedSeconds: _elapsedSeconds,
     );
 
     if (!mounted) return;
@@ -134,12 +162,38 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     const SizedBox(height: 20),
                     /* BEGIN: sequential major quiz changes */
-                    Text(
-                      'Major ${_currentMajorIndex + 1} of ${widget.majorIds.length}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.parchmentMuted(),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Major ${_currentMajorIndex + 1} of ${widget.majorIds.length}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.parchmentMuted(),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.fieldFill,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: AppColors.amber.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            'Time: $_formattedElapsedTime',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.amber,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
 

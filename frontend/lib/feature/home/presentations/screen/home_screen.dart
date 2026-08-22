@@ -45,8 +45,29 @@ class _HomeScreenState extends State<HomeScreen> {
         : 'Major $majorId';
   }
 
+  String _ordinalSuffix(int number) {
+    if (number >= 11 && number <= 13) return 'th';
+    switch (number % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final rankedEntries = _majorScores.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final hasTakenQuiz =
+        _majorScores.isNotEmpty ||
+        widget.recentScore != null ||
+        widget.recentMajor != null;
+
     return Scaffold(
       backgroundColor: AppColors.ink,
       body: SafeArea(
@@ -95,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.fieldFill,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.amber.withOpacity(0.3)),
+                  border: Border.all(
+                    color: AppColors.amber.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text('Start quiz'),
+                      child: Text(hasTakenQuiz ? 'Retake quiz' : 'Start quiz'),
                     ),
                   ],
                 ),
@@ -194,86 +217,91 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
-                    children: _majorScores.entries.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _majorName(entry.key),
-                              style: const TextStyle(
-                                color: AppColors.parchment,
+                    children: [
+                      ...rankedEntries.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final majorEntry = entry.value;
+                        final place = index + 1;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.amber.withValues(
+                                        alpha: 0.12,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      '$place${_ordinalSuffix(place)}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.amber,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    _majorName(majorEntry.key),
+                                    style: const TextStyle(
+                                      color: AppColors.parchment,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '${majorEntry.value} points',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.amber,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.amber,
+                              foregroundColor: AppColors.ink,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
                               ),
                             ),
-                            Text(
-                              '${entry.value} points',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.amber,
-                              ),
+                            label: const Text(
+                              'Save',
+                              style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                          ],
+                          ),
                         ),
-                      );
-                    }).toList(),
+                      ),
+                    ],
                   ),
                 ),
               const SizedBox(height: 22),
-
-              // if (_majorScores.isEmpty) ...[
-              //   // Recent result
-              //   Text(
-              //     'RECENT RESULT',
-              //     style: TextStyle(
-              //       fontSize: 12,
-              //       fontWeight: FontWeight.w600,
-              //       letterSpacing: 0.5,
-              //       color: AppColors.parchmentMuted(),
-              //     ),
-              //   ),
-              //   const SizedBox(height: 10),
-              //   if (widget.recentMajor == null)
-              //     Text(
-              //       'No quiz results yet.',
-              //       style: TextStyle(
-              //         fontSize: 13,
-              //         color: AppColors.parchmentMuted(),
-              //       ),
-              //     )
-              //   else
-              //     Container(
-              //       padding: const EdgeInsets.all(14),
-              //       decoration: BoxDecoration(
-              //         color: AppColors.fieldFill,
-              //         borderRadius: BorderRadius.circular(12),
-              //       ),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Text(
-              //             widget.recentMajor!,
-              //             style: const TextStyle(
-              //               fontSize: 13,
-              //               fontWeight: FontWeight.w500,
-              //               color: AppColors.parchment,
-              //             ),
-              //           ),
-              //           Text(
-              //             '${widget.recentScore}%',
-              //             style: const TextStyle(
-              //               fontSize: 15,
-              //               fontWeight: FontWeight.w600,
-              //               color: AppColors.amber,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              // ],
             ],
           ),
         ),

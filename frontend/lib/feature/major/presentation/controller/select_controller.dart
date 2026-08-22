@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
-import 'package:get_x/get_state_manager/src/simple/get_controllers.dart';
 import 'package:major_match2/core/services/dio_client.dart';
 import 'package:major_match2/feature/major/model/select_model.dart';
 

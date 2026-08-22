@@ -11,6 +11,7 @@ class SelectController extends GetxController {
   Future<Map<int, int>?> submitScores({
     required List<int> questionIds,
     required Map<int, int> scores,
+    required int elapsedSeconds,
   }) async {
     if (questionIds.isEmpty) {
       errorMessage('Question IDs are required');
@@ -28,6 +29,8 @@ class SelectController extends GetxController {
           'scores': scores.map(
             (questionId, score) => MapEntry(questionId.toString(), score),
           ),
+          'elapsed_seconds': elapsedSeconds,
+          'time_taken_seconds': elapsedSeconds,
         },
       );
 

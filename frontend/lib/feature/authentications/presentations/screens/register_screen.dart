@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
-import 'package:get_x/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/controller/register_controller.dart';
