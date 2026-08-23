@@ -18,6 +18,23 @@ class Select extends StatefulWidget {
 class _SelectState extends State<Select> {
   final Set<String> _selected = {};
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedSelection();
+  }
+
+  void _loadSavedSelection() {
+    final savedMajors = Get.find<StorageService>().getSelectedMajors();
+    if (savedMajors.isNotEmpty) {
+      setState(() {
+        _selected
+          ..clear()
+          ..addAll(savedMajors);
+      });
+    }
+  }
+
   void _toggle(String name) {
     setState(() {
       if (_selected.contains(name)) {
@@ -139,29 +156,57 @@ class _SelectState extends State<Select> {
                 ),
               ),
               const SizedBox(height: 12),
-              AppPrimaryButton(
-                label: 'Continue',
-                onPressed: canContinue
-                    ? () async {
-                        final selectedMajorIds = widget.controller.majors
-                            .where((major) => _selected.contains(major.name))
-                            .map((major) => major.id)
-                            .toList();
-                        await Get.find<StorageService>().saveSelectedMajors(
-                          _selected,
-                        );
-                        await Get.find<StorageService>().saveSelectedMajorIds(
-                          selectedMajorIds,
-                        );
-                        Get.toNamed(
-                          '/home',
-                          arguments: {
-                            'names': _selected.toList(),
-                            'ids': selectedMajorIds,
-                          },
-                        );
-                      }
-                    : null,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppPrimaryButton(
+                    label: 'Continue',
+                    onPressed: canContinue
+                        ? () async {
+                            final selectedMajorIds = widget.controller.majors
+                                .where(
+                                  (major) => _selected.contains(major.name),
+                                )
+                                .map((major) => major.id)
+                                .toList();
+                            await Get.find<StorageService>().saveSelectedMajors(
+                              _selected,
+                            );
+                            await Get.find<StorageService>()
+                                .saveSelectedMajorIds(selectedMajorIds);
+                            Get.offNamed(
+                              '/home',
+                              arguments: {
+                                'names': _selected.toList(),
+                                'ids': selectedMajorIds,
+                              },
+                            );
+                          }
+                        : null,
+                  ),
+                  TextButton.icon(
+                    onPressed: () async {
+                      await Get.find<StorageService>().saveSelectedMajors({});
+                      await Get.find<StorageService>().saveSelectedMajorIds([]);
+                      Get.offNamed(
+                        '/home',
+                        arguments: {'names': <String>[], 'ids': <int>[]},
+                      );
+                    },
+                    label: const Text(
+                      'Skip',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.amber,
+                      ),
+                    ),
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

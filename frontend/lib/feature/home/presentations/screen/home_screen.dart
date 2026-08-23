@@ -29,6 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<int, int> _majorScores = {};
 
   Future<void> _startQuiz() async {
+    if (widget.selectedMajors.isEmpty) {
+      Get.offNamed('/select');
+      return;
+    }
+
     final result = await Get.to<Map<int, int>>(
       () => QuizScreen(majorIds: widget.majorIds),
     );
@@ -67,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _majorScores.isNotEmpty ||
         widget.recentScore != null ||
         widget.recentMajor != null;
+    final hasNoSelectedMajors = widget.selectedMajors.isEmpty;
 
     return Scaffold(
       backgroundColor: AppColors.ink,
@@ -134,7 +140,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Take the quiz for your ${widget.selectedMajors.length} majors',
+                      hasNoSelectedMajors
+                          ? 'You have not selected any quiz.'
+                          : 'Take the quiz for your ${widget.selectedMajors.length} majors',
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -152,7 +160,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text(hasTakenQuiz ? 'Retake quiz' : 'Start quiz'),
+                      child: Text(
+                        hasNoSelectedMajors
+                            ? 'Select major'
+                            : (hasTakenQuiz ? 'Retake quiz' : 'Start quiz'),
+                      ),
                     ),
                   ],
                 ),
@@ -277,7 +289,34 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            //here
+                            onPressed: () {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: const Text('Save Scores'),
+                                  content: const Text(
+                                    'Are you sure you want to save your scores? this score will be move to history',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.close();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _majorScores.clear();
+                                        });
+                                        Get.close();
+                                      },
+                                      child: const Text('Save'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
 
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.amber,
