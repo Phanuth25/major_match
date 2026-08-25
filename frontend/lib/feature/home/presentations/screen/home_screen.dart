@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/questions/presentaions/screen/quiz_screen.dart';
+import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -12,6 +13,7 @@ class HomeScreen extends StatefulWidget {
     this.recentMajor,
     this.recentScore,
     this.onStartQuiz,
+    this.seconds,
   });
 
   final String userName;
@@ -20,6 +22,7 @@ class HomeScreen extends StatefulWidget {
   final String? recentMajor;
   final int? recentScore;
   final VoidCallback? onStartQuiz;
+  final int? seconds;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,6 +30,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<int, int> _majorScores = {};
+  int _elapsedSeconds = 0;
+  DateTime? _quizStartedAt;
+  final AttemptController _attemptController = Get.put(AttemptController());
 
   Future<void> _startQuiz() async {
     if (widget.selectedMajors.isEmpty) {
@@ -34,12 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    final result = await Get.to<Map<int, int>>(
+    _quizStartedAt = DateTime.now();
+    final result = await Get.to<(Map<int, int>, int)>(
       () => QuizScreen(majorIds: widget.majorIds),
     );
 
     if (result != null && mounted) {
-      setState(() => _majorScores = result);
+      setState(() {
+        _majorScores = result.$1;
+        _elapsedSeconds = result.$2;
+      });
     }
   }
 
@@ -305,11 +315,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: const Text('Cancel'),
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
+                                        //call it here
+                                        final createdAttemptId =
+                                            await _attemptController
+                                                .createAttempt(
+                                                  startedAt:
+                                                      _quizStartedAt ??
+                                                      DateTime.now(),
+                                                  durationSeconds:
+                                                      _elapsedSeconds,
+                                                );
+
+                                        if (createdAttemptId == null) {
+                                          Get.snackbar(
+                                            'Unable to save attempt',
+                                            _attemptController
+                                                .errorMessage
+                                                .value,
+                                          );
+                                          return;
+                                        }
+
                                         setState(() {
                                           _majorScores.clear();
                                         });
                                         Get.close();
+                                        Get.snackbar(
+                                          'Scores saved',
+                                          _attemptController
+                                              .successMessage
+                                              .value,
+                                        );
                                       },
                                       child: const Text('Save'),
                                     ),

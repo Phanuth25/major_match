@@ -6,6 +6,7 @@ import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/questions/model/question_model.dart';
 import 'package:major_match2/feature/questions/presentaions/controllers/question_controller.dart';
 import 'package:major_match2/feature/questions/presentaions/controllers/select_controller.dart';
+import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
 
 import '../../../../shared/widgets/app_primary_button.dart';
 
@@ -25,6 +26,7 @@ class QuizScreen extends StatefulWidget {
   final List<int> majorIds;
   final QuestionController controller = Get.put(QuestionController());
   final SelectController scoreController = Get.put(SelectController());
+  final AttemptController attemptController = Get.put(AttemptController());
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -38,10 +40,12 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isLoading = true;
   int _elapsedSeconds = 0;
   Timer? _quizTimer;
+  late final DateTime _startedAt;
 
   @override
   void initState() {
     super.initState();
+    _startedAt = DateTime.now();
     _startQuizTimer();
     _loadCurrentMajor();
   }
@@ -69,7 +73,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Future<void> _loadCurrentMajor() async {
     if (widget.majorIds.isEmpty) {
       if (mounted) {
-        Navigator.pop(context, <int, int>{});
+        Navigator.pop(context, (<int, int>{}, 0));
       }
       return;
     }
@@ -126,7 +130,7 @@ class _QuizScreenState extends State<QuizScreen> {
       return;
     }
 
-    Navigator.pop(context, majorScores);
+    Navigator.pop(context, (majorScores, _elapsedSeconds));
   }
   /* END: sequential major quiz changes */
 
