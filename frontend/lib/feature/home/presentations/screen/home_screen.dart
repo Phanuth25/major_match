@@ -86,6 +86,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.ink,
+      appBar: AppBar(
+        backgroundColor: AppColors.ink,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      drawer: Drawer(
+        backgroundColor: AppColors.fieldFill,
+        child: SafeArea(
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.home_outlined),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 50),
+                title: const Text('Home'),
+                horizontalTitleGap: 35,
+                iconColor: AppColors.parchment,
+                textColor: AppColors.parchment,
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

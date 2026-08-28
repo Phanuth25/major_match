@@ -7,6 +7,7 @@ import selectRoute from "./route/majors/select_route.js";
 import questionRoute from "./route/questions/question_route.js";
 import questionSelectRoute from "./route/questions/select_route.js";
 import attemptRoute from "./route/quiz/attempt_route.js";
+import attemptFinalRoute from "./route/quiz/attempt_final_route.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,6 +42,7 @@ app.use("/api", selectRoute);
 app.use("/api", questionRoute);
 app.use("/api", questionSelectRoute);
 app.use("/api", attemptRoute);
+app.use("/api", attemptFinalRoute);
 
 // Catch-all 404 handler
 app.use((req, res) => {
