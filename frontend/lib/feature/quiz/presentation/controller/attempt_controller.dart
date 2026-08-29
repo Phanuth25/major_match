@@ -2,12 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/services/dio_client.dart';
 import 'package:major_match2/core/services/local_storage.dart';
+import 'package:major_match2/feature/quiz/presentation/controller/attempt_final_controller.dart';
 
 class AttemptController extends GetxController {
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final successMessage = ''.obs;
   final attemptId = RxnInt();
+  final AttemptFinalController attemptFinalController =
+      Get.find<AttemptFinalController>();
 
   /// Creates a quiz-attempt record through POST /api/attempt.
   Future<int?> createAttempt({
@@ -42,14 +45,18 @@ class AttemptController extends GetxController {
 
       if (response.statusCode != 201) {
         errorMessage.value =
-            response.data?['message']?.toString() ?? 'Failed to create quiz attempt';
+            response.data?['message']?.toString() ??
+            'Failed to create quiz attempt';
         return null;
       }
 
       final id = response.data['attempt_id'];
       attemptId.value = id is int ? id : int.tryParse(id.toString());
       successMessage.value =
-          response.data['message']?.toString() ?? 'Quiz attempt created successfully';
+          response.data['message']?.toString() ??
+          'Quiz attempt created successfully';
+      await attemptFinalController
+          .createAttemptFinalResults(); // Clear previous major scores before creating a new attempt
       return attemptId.value;
     } on DioException catch (error) {
       errorMessage.value =

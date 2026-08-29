@@ -13,6 +13,14 @@ class StorageService {
     return _prefs.getString('user_id');
   }
 
+  Future<void> saveAttemptId(int id) async {
+    await _prefs.setInt('attempt_id', id);
+  }
+
+  int? getAttemptId() {
+    return _prefs.getInt('attempt_id');
+  }
+
   Future<void> saveUsername(String username) async {
     await _prefs.setString('username', username);
   }

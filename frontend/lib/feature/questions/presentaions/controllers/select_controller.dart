@@ -7,10 +7,12 @@ class SelectController extends GetxController {
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final successMessage = ''.obs;
+  final RxMap<int, int> rawMajorScores = RxMap<int, int>();
 
   Future<Map<int, int>?> submitScores({
     required List<int> questionIds,
     required Map<int, int> scores,
+    //rawMajorScores
     required int elapsedSeconds,
   }) async {
     if (questionIds.isEmpty) {
@@ -34,17 +36,19 @@ class SelectController extends GetxController {
         },
       );
 
-      final rawMajorScores = response.data['major_scores'];
-      if (response.statusCode != 200 || rawMajorScores is! Map) {
+      final data = response.data['major_scores'];
+      if (response.statusCode != 200 || data is! Map) {
         errorMessage('Failed to calculate major scores');
         return null;
       }
-      debugPrint('Major scores calculated: $rawMajorScores');
-      successMessage('Major scores calculated successfully');
-      return rawMajorScores.map(
+      final parsed = data.map<int, int>(
         (majorId, score) =>
             MapEntry(int.parse(majorId.toString()), (score as num).toInt()),
       );
+      debugPrint('Major scores calculated: $parsed');
+      rawMajorScores.assignAll(parsed); // update the observable field
+      successMessage('Major scores calculated successfully');
+      return parsed;
     } on DioException catch (error) {
       errorMessage(
         error.response?.data?['message']?.toString() ??

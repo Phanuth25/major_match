@@ -11,7 +11,7 @@ import attemptFinalRoute from "./route/quiz/attempt_final_route.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+``
 // Essential Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,4 +52,5 @@ app.use((req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server is listening at http://localhost:${PORT}`);
+  
 });

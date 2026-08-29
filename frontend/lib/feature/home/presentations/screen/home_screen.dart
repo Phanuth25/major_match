@@ -4,6 +4,8 @@ import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/questions/presentaions/screen/quiz_screen.dart';
 import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
 
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
@@ -33,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _elapsedSeconds = 0;
   DateTime? _quizStartedAt;
   final AttemptController _attemptController = Get.put(AttemptController());
+
 
   Future<void> _startQuiz() async {
     if (widget.selectedMajors.isEmpty) {
