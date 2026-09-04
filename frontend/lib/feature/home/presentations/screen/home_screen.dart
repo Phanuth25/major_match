@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
+import 'package:major_match2/feature/major/presentation/controller/select_controller.dart';
 import 'package:major_match2/feature/questions/presentaions/screen/quiz_screen.dart';
 import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
-
-
+import 'package:major_match2/shared/widgets/major_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -34,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<int, int> _majorScores = {};
   int _elapsedSeconds = 0;
   DateTime? _quizStartedAt;
-  final AttemptController _attemptController = Get.put(AttemptController());
-
+  final AttemptController _attemptController = Get.find<AttemptController>();
+  final MajorController majorController = Get.find<MajorController>();
 
   Future<void> _startQuiz() async {
     if (widget.selectedMajors.isEmpty) {
@@ -106,305 +106,356 @@ class _HomeScreenState extends State<HomeScreen> {
                 horizontalTitleGap: 35,
                 iconColor: AppColors.parchment,
                 textColor: AppColors.parchment,
-                onTap: () => Navigator.pop(context),
+                onTap: () => Get.offNamed('/'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.bookmark_border_outlined),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 50),
+                title: const Text('History'),
+                horizontalTitleGap: 35,
+                iconColor: AppColors.parchment,
+                textColor: AppColors.parchment,
+                onTap: () => Get.toNamed('/history'),
               ),
             ],
           ),
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Greeting
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Start quiz card
+                Obx(
+                  () => MajorSlider(
+                    majors: majorController.majors.map((m) => m.name).toList(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: AppColors.fieldFill,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.amber.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Welcome back',
+                      const Text(
+                        'READY WHEN YOU ARE',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.parchmentMuted(),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1,
+                          color: AppColors.amber,
                         ),
                       ),
+                      const SizedBox(height: 8),
                       Text(
-                        widget.userName,
+                        hasNoSelectedMajors
+                            ? 'You have not selected any quiz.'
+                            : 'Take the quiz for your ${widget.selectedMajors.length} majors',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
                           color: AppColors.parchment,
                         ),
                       ),
+                      const SizedBox(height: 14),
+                      ElevatedButton(
+                        onPressed: _startQuiz,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.amber,
+                          foregroundColor: AppColors.ink,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          hasNoSelectedMajors
+                              ? 'Select major'
+                              : (hasTakenQuiz ? 'Retake quiz' : 'Start quiz'),
+                        ),
+                      ),
                     ],
                   ),
-                  const CircleAvatar(
-                    radius: 19,
-                    backgroundColor: AppColors.fieldFill,
-                    child: Icon(Icons.person, color: AppColors.parchment),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 22),
 
-              // Start quiz card
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: AppColors.fieldFill,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.amber.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'READY WHEN YOU ARE',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1,
-                        color: AppColors.amber,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      hasNoSelectedMajors
-                          ? 'You have not selected any quiz.'
-                          : 'Take the quiz for your ${widget.selectedMajors.length} majors',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.parchment,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    ElevatedButton(
-                      onPressed: _startQuiz,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.amber,
-                        foregroundColor: AppColors.ink,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        hasNoSelectedMajors
-                            ? 'Select major'
-                            : (hasTakenQuiz ? 'Retake quiz' : 'Start quiz'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 22),
-
-              // Selected majors
-              Text(
-                'YOUR MAJORS',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                  color: AppColors.parchmentMuted(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: widget.selectedMajors
-                    .map(
-                      (m) => Chip(
-                        label: Text(
-                          m,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.parchment,
-                          ),
-                        ),
-                        backgroundColor: AppColors.fieldFill,
-                        side: BorderSide(color: AppColors.hairline()),
-                      ),
-                    )
-                    .toList(),
-              ),
-              const SizedBox(height: 22),
-
-              const Text(
-                'MAJOR SCORES',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                  color: AppColors.parchment,
-                ),
-              ),
-              const SizedBox(height: 10),
-              if (_majorScores.isEmpty)
+                // Selected majors
                 Text(
-                  'Complete the quiz to see your scores.',
+                  'YOUR MAJORS',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
                     color: AppColors.parchmentMuted(),
                   ),
-                )
-              else
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.fieldFill,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    children: [
-                      ...rankedEntries.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final majorEntry = entry.value;
-                        final place = index + 1;
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 12,
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: widget.selectedMajors
+                      .map(
+                        (m) => Chip(
+                          label: Text(
+                            m,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.parchment,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.amber.withValues(
-                                        alpha: 0.12,
+                          backgroundColor: AppColors.fieldFill,
+                          side: BorderSide(color: AppColors.hairline()),
+                        ),
+                      )
+                      .toList(),
+                ),
+                const SizedBox(height: 22),
+
+                const Text(
+                  'MAJOR SCORES',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                    color: AppColors.parchment,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (_majorScores.isEmpty)
+                  Text(
+                    'Complete the quiz to see your scores.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.parchmentMuted(),
+                    ),
+                  )
+                else
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.fieldFill,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        ...rankedEntries.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final majorEntry = entry.value;
+                          final place = index + 1;
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.amber.withValues(
+                                          alpha: 0.12,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
+                                      child: Text(
+                                        '$place${_ordinalSuffix(place)}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.amber,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      _majorName(majorEntry.key),
+                                      style: const TextStyle(
+                                        color: AppColors.parchment,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${majorEntry.value} points',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.amber,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: ElevatedButton.icon(
+                                  //here
+                                  onPressed: () {
+                                    Get.dialog(
+                                      AlertDialog(
+                                        title: const Text('Save Scores'),
+                                        content: const Text(
+                                          'Are you sure you want to save your scores? this score will be move to history',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.close();
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              //call it here
+                                              final createdAttemptId =
+                                                  await _attemptController
+                                                      .createAttempt(
+                                                        startedAt:
+                                                            _quizStartedAt ??
+                                                            DateTime.now(),
+                                                        durationSeconds:
+                                                            _elapsedSeconds,
+                                                      );
+
+                                              if (createdAttemptId == null) {
+                                                Get.snackbar(
+                                                  'Unable to save attempt',
+                                                  _attemptController
+                                                      .errorMessage
+                                                      .value,
+                                                );
+                                                return;
+                                              }
+
+                                              setState(() {
+                                                _majorScores.clear();
+                                              });
+                                              Get.close();
+                                              Get.snackbar(
+                                                'Scores saved',
+                                                _attemptController
+                                                    .successMessage
+                                                    .value,
+                                              );
+                                            },
+                                            child: const Text('Save'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.amber,
+                                    foregroundColor: AppColors.ink,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Text(
-                                      '$place${_ordinalSuffix(place)}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.amber,
-                                      ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    _majorName(majorEntry.key),
-                                    style: const TextStyle(
-                                      color: AppColors.parchment,
+                                  label: const Text(
+                                    'Save',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                              Text(
-                                '${majorEntry.value} points',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.amber,
+                              SizedBox(width: 8),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: ElevatedButton.icon(
+                                  //here
+                                  onPressed: () {
+                                    Get.dialog(
+                                      AlertDialog(
+                                        title: const Text('Remove Scores'),
+                                        content: const Text(
+                                          'Are you sure you want to remove your scores? This action cannot be undone.',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.close();
+                                            },
+                                            child: const Text('No'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              setState(() {
+                                                _majorScores.clear();
+                                              });
+                                              Get.close();
+                                              Get.snackbar(
+                                                'Quiz result cancelled',
+                                                'Your quiz result has been discarded.',
+                                              );
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red.withOpacity(
+                                      0.8,
+                                    ),
+                                    foregroundColor: AppColors.ink,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                  label: const Text(
+                                    'Remove',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        );
-                      }),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton.icon(
-                            //here
-                            onPressed: () {
-                              Get.dialog(
-                                AlertDialog(
-                                  title: const Text('Save Scores'),
-                                  content: const Text(
-                                    'Are you sure you want to save your scores? this score will be move to history',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Get.close();
-                                      },
-                                      child: const Text('Cancel'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        //call it here
-                                        final createdAttemptId =
-                                            await _attemptController
-                                                .createAttempt(
-                                                  startedAt:
-                                                      _quizStartedAt ??
-                                                      DateTime.now(),
-                                                  durationSeconds:
-                                                      _elapsedSeconds,
-                                                );
-
-                                        if (createdAttemptId == null) {
-                                          Get.snackbar(
-                                            'Unable to save attempt',
-                                            _attemptController
-                                                .errorMessage
-                                                .value,
-                                          );
-                                          return;
-                                        }
-
-                                        setState(() {
-                                          _majorScores.clear();
-                                        });
-                                        Get.close();
-                                        Get.snackbar(
-                                          'Scores saved',
-                                          _attemptController
-                                              .successMessage
-                                              .value,
-                                        );
-                                      },
-                                      child: const Text('Save'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.amber,
-                              foregroundColor: AppColors.ink,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                            ),
-                            label: const Text(
-                              'Save',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              const SizedBox(height: 22),
-            ],
+                const SizedBox(height: 22),
+              ],
+            ),
           ),
         ),
       ),

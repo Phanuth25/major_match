@@ -6,8 +6,13 @@ import 'package:major_match2/feature/authentications/presentations/screens/contr
 import 'package:major_match2/feature/authentications/presentations/screens/login_screen.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/register_screen.dart';
 import 'package:major_match2/feature/home/presentations/screen/home_screen.dart';
+import 'package:major_match2/feature/major/presentation/controller/select_controller.dart';
 import 'package:major_match2/feature/major/presentation/screen/select_screen.dart';
 import 'package:major_match2/feature/questions/presentaions/controllers/question_controller.dart';
+import 'package:major_match2/feature/questions/presentaions/controllers/select_controller.dart';
+import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
+import 'package:major_match2/feature/quiz/presentation/controller/attempt_final_controller.dart';
+import 'package:major_match2/feature/quiz/presentation/screen/history_screen.dart';
 import 'package:major_match2/feature/welcome/presentations/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,8 +22,11 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   Get.put(StorageService(prefs));
   Get.put(LoginController());
-  Get.put(QuestionController());
-
+  Get.put(SelectController(), permanent: true);
+  Get.put(AttemptFinalController(), permanent: true);
+  Get.put(AttemptController(), permanent: true);
+  Get.put(QuestionController(), permanent: true);
+  Get.put(MajorController(), permanent: true);
   // Load saved userId
   await Get.find<LoginController>().loadSavedUserId();
 
@@ -47,6 +55,7 @@ class MajorMatchApp extends StatelessWidget {
         GetPage(name: '/register', page: () => RegisterScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
         GetPage(name: '/select', page: () => Select()),
+        GetPage(name: '/history', page: () => QuizHistoryTestScreen()),
         GetPage(
           name: '/home',
           page: () {
@@ -68,6 +77,7 @@ class MajorMatchApp extends StatelessWidget {
             );
           },
         ),
+
       ],
     );
   }

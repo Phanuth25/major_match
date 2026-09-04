@@ -6,8 +6,6 @@ import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/questions/model/question_model.dart';
 import 'package:major_match2/feature/questions/presentaions/controllers/question_controller.dart';
 import 'package:major_match2/feature/questions/presentaions/controllers/select_controller.dart';
-import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
-
 import '../../../../shared/widgets/app_primary_button.dart';
 
 // Fixed answer scale (docs/MEMORY.md): Strongly Agree=5, Agree=4,
@@ -24,9 +22,8 @@ class QuizScreen extends StatefulWidget {
   QuizScreen({super.key, required this.majorIds});
 
   final List<int> majorIds;
-  final QuestionController controller = Get.put(QuestionController());
-  final SelectController scoreController = Get.put(SelectController());
-  final AttemptController attemptController = Get.put(AttemptController());
+final QuestionController controller = Get.find<QuestionController>();
+final SelectController scoreController = Get.find<SelectController>();
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();

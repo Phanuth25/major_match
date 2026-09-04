@@ -9,10 +9,12 @@ class AttemptFinalController extends GetxController {
   final errorMessage = ''.obs;
   final successMessage = ''.obs;
   final finalResultId = RxnInt();
-  final selectController = Get.find<SelectController>();
+
+  
 
   /// Creates a quiz-final-result record through POST /api/attempt-final.
   Future<bool> createAttemptFinalResults() async {
+    final selectController = Get.find<SelectController>();
     try {
       final attemptId = Get.find<StorageService>().getAttemptId();
       if (attemptId == null) {

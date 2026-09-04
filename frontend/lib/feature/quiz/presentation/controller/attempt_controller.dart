@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/services/dio_client.dart';
 import 'package:major_match2/core/services/local_storage.dart';
@@ -9,14 +10,14 @@ class AttemptController extends GetxController {
   final errorMessage = ''.obs;
   final successMessage = ''.obs;
   final attemptId = RxnInt();
-  final AttemptFinalController attemptFinalController =
-      Get.find<AttemptFinalController>();
 
   /// Creates a quiz-attempt record through POST /api/attempt.
   Future<int?> createAttempt({
     required DateTime startedAt,
     required int durationSeconds,
   }) async {
+    final AttemptFinalController attemptFinalController =
+        Get.find<AttemptFinalController>();
     final userId = Get.find<StorageService>().getUserId();
 
     if (userId == null || userId.isEmpty) {
@@ -52,11 +53,22 @@ class AttemptController extends GetxController {
 
       final id = response.data['attempt_id'];
       attemptId.value = id is int ? id : int.tryParse(id.toString());
+      // Save it so AttemptFinalController can read it
+      if (attemptId.value != null) {
+        await Get.find<StorageService>().saveAttemptId(attemptId.value!);
+      }
       successMessage.value =
           response.data['message']?.toString() ??
           'Quiz attempt created successfully';
-      await attemptFinalController
-          .createAttemptFinalResults(); // Clear previous major scores before creating a new attempt
+
+      final finalResultsSaved = await attemptFinalController
+          .createAttemptFinalResults();
+      if (!finalResultsSaved) {
+        errorMessage.value = attemptFinalController.errorMessage.value;
+        debugPrint('Failed to save final results: ${errorMessage.value}');
+        return null; // propagate failure — don't report success
+      }
+
       return attemptId.value;
     } on DioException catch (error) {
       errorMessage.value =

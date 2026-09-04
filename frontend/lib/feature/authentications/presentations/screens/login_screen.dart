@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
   LoginScreen({super.key, this.onRegister});
 
   final VoidCallback? onRegister;
-  final LoginController controller = Get.put(LoginController());
+  final LoginController controller = Get.find<LoginController>();
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
