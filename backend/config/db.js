@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import { createPool } from "mysql2";
 
-
 dotenv.config();
 
 const pool = createPool({
@@ -17,7 +16,7 @@ const pool = createPool({
 
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error("Database connection error:", err.message);
+    console.error("Database connection error:", err.message, err.code);
   } else {
     if (connection) connection.release();
     console.log("Database connected successfully!!");
