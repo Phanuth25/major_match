@@ -12,7 +12,14 @@ class QuizHistoryTestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Quiz History'),backgroundColor: Colors.transparent,),
+      appBar: AppBar(
+        title: const Text('Quiz History'),
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -71,10 +78,12 @@ class _AttemptCard extends StatelessWidget {
             spacing: 20,
             runSpacing: 12,
             children: items
-                .map((r) => _ScoreRing(
-                      label: r.majorName as String,
-                      score: (r.score as num).toDouble(),
-                    ))
+                .map(
+                  (r) => _ScoreRing(
+                    label: r.majorName as String,
+                    score: (r.score as num).toDouble(),
+                  ),
+                )
                 .toList(),
           ),
         ],
@@ -115,7 +124,10 @@ class _ScoreRing extends StatelessWidget {
               ),
               Text(
                 score.toInt().toString(),
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
