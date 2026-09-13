@@ -20,7 +20,7 @@ pool.getConnection((err, connection) => {
     console.error("Database connection error:", err.message);
   } else {
     if (connection) connection.release();
-    console.log("Database connected successfully!");
+    console.log("Database connected successfully!!");
   }
 });
 
