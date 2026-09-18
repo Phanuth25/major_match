@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Get.toNamed('/history'),
               ),
               ListTile(
-                leading: const Icon(Icons.bookmark_border_outlined),
+                leading: const Icon(Icons.logout_outlined),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 50),
                 title: const Text('logout'),
                 horizontalTitleGap: 35,
