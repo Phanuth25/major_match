@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: widget.onRegister,
+                    onTap: () => Get.toNamed('/register'),
                     child: const Text(
                       'Sign up',
                       style: TextStyle(
