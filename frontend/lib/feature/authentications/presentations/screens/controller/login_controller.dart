@@ -24,6 +24,11 @@ class LoginController extends GetxController {
     }
   }
 
+  Future<void> removeSavedUserId() async {
+    await Get.find<StorageService>().removeUserId();
+    UserId.value = '';
+  }
+
   Future<bool> Login({
     required String name,
     required String email,
@@ -37,7 +42,8 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         successmessage.value = 'Login successfully';
         UserId.value = response.data['user'].toString(); // Store the user ID
-        Username.value = response.data['name'].toString(); // Store the user name
+        Username.value = response.data['name']
+            .toString(); // Store the user name
         await Get.find<StorageService>().saveUserId(UserId.value);
         await Get.find<StorageService>().saveUsername(Username.value);
         return true;

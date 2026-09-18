@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
 import 'package:major_match2/core/theme/app_color.dart';
+import 'package:major_match2/feature/authentications/presentations/screens/controller/login_controller.dart';
 import 'package:major_match2/feature/major/presentation/controller/select_controller.dart';
 import 'package:major_match2/feature/questions/presentaions/screen/quiz_screen.dart';
 import 'package:major_match2/feature/quiz/presentation/controller/attempt_controller.dart';
@@ -116,6 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconColor: AppColors.parchment,
                 textColor: AppColors.parchment,
                 onTap: () => Get.toNamed('/history'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.bookmark_border_outlined),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 50),
+                title: const Text('logout'),
+                horizontalTitleGap: 35,
+                iconColor: AppColors.parchment,
+                textColor: AppColors.parchment,
+                onTap: () async {
+                  await Get.find<LoginController>().removeSavedUserId();
+                  Get.offAllNamed('/login');
+                },
               ),
             ],
           ),

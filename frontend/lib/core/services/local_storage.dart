@@ -13,6 +13,10 @@ class StorageService {
     return _prefs.getString('user_id');
   }
 
+  Future<void> removeUserId() async {
+    await _prefs.remove('user_id');
+  }
+
   Future<void> saveAttemptId(int id) async {
     await _prefs.setInt('attempt_id', id);
   }
