@@ -7,9 +7,12 @@ class QuizResultModel {
   factory QuizResultModel.fromJson(Map<String, dynamic> json) {
     return QuizResultModel(
       message: json['message'] as String? ?? '',
-      results: (json['results'] as List<dynamic>?)
-              ?.map((item) =>
-                  QuizAttemptResult.fromJson(item as Map<String, dynamic>))
+      results:
+          (json['results'] as List<dynamic>?)
+              ?.map(
+                (item) =>
+                    QuizAttemptResult.fromJson(item as Map<String, dynamic>),
+              )
               .toList() ??
           [],
     );
@@ -25,6 +28,7 @@ class QuizResultModel {
 
 class QuizAttemptResult {
   final int quizAttemptId;
+  final int attemptNumber; // newfinal int attemptNumber; // new
   final int userId;
   final int majorId;
   final DateTime? startedAt;
@@ -33,6 +37,7 @@ class QuizAttemptResult {
 
   QuizAttemptResult({
     required this.quizAttemptId,
+    required this.attemptNumber,
     required this.userId,
     required this.majorId,
     required this.startedAt,
@@ -43,6 +48,7 @@ class QuizAttemptResult {
   factory QuizAttemptResult.fromJson(Map<String, dynamic> json) {
     return QuizAttemptResult(
       quizAttemptId: json['quiz_attempt_id'] as int? ?? 0,
+      attemptNumber: json['attempt_number'] as int? ?? 0,
       userId: json['user_id'] as int? ?? 0,
       majorId: json['major_id'] as int? ?? 0,
       startedAt: json['started_at'] != null
@@ -56,6 +62,7 @@ class QuizAttemptResult {
   Map<String, dynamic> toJson() {
     return {
       'quiz_attempt_id': quizAttemptId,
+      'attempt_number': attemptNumber,
       'user_id': userId,
       'major_id': majorId,
       'started_at': startedAt?.toIso8601String(),

@@ -42,7 +42,10 @@ class QuizHistoryTestScreen extends StatelessWidget {
             final attemptId = attemptIds[index];
             final items = grouped[attemptId]!;
 
-            return _AttemptCard(attemptId: attemptId, items: items);
+            return _AttemptCard(
+              attemptNumber: items.first.attemptNumber,
+              items: items,
+            );
           },
         );
       }),
@@ -51,10 +54,10 @@ class QuizHistoryTestScreen extends StatelessWidget {
 }
 
 class _AttemptCard extends StatelessWidget {
-  final int attemptId;
+  final int attemptNumber;
   final List<dynamic> items; // List<QuizAttemptResult>
 
-  const _AttemptCard({required this.attemptId, required this.items});
+  const _AttemptCard({required this.attemptNumber, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +75,7 @@ class _AttemptCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Attempt $attemptId',
+            'Attempt $attemptNumber',
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
