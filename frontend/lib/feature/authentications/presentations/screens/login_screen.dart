@@ -43,14 +43,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success && mounted) {
-       Get.snackbar(
+      Get.snackbar(
         'Success',
         widget.controller.successmessage.value,
         snackPosition: SnackPosition.values.last,
         backgroundColor: AppColors.amber,
         colorText: Colors.white,
       );
- // Navigate to the select screen after successful login
+      // Navigate to the select screen after successful login
       Get.toNamed('/select');
     } else {
       Get.snackbar(
@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => Get.toNamed('/register'),
+                    onTap: () => Get.offAndToNamed('/register'),
                     child: const Text(
                       'Sign up',
                       style: TextStyle(
