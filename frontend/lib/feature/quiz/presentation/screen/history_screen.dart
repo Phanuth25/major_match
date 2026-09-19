@@ -17,7 +17,7 @@ class QuizHistoryTestScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.toNamed('/home'),
         ),
       ),
       body: Obx(() {
