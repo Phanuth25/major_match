@@ -62,8 +62,10 @@ class _AttemptCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
+        // ignore: deprecated_member_use
         color: Colors.blue.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
+        // ignore: deprecated_member_use
         border: Border.all(color: Colors.yellow.withOpacity(0.15)),
       ),
       child: Column(
