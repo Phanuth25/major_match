@@ -57,8 +57,8 @@ class _SelectState extends State<Select> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Select your majors',
+              Text(
+                'sw1'.tr,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w500,
@@ -67,7 +67,7 @@ class _SelectState extends State<Select> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Choose majors you\'re curious about. We\'ll only ask questions about these.',
+                'sw2'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.5,
@@ -160,7 +160,7 @@ class _SelectState extends State<Select> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   AppPrimaryButton(
-                    label: 'Continue',
+                    label: 'sw3'.tr,
                     onPressed: canContinue
                         ? () async {
                             final selectedMajorIds = widget.controller.majors
@@ -193,8 +193,8 @@ class _SelectState extends State<Select> {
                         arguments: {'names': <String>[], 'ids': <int>[]},
                       );
                     },
-                    label: const Text(
-                      'Skip',
+                    label: Text(
+                      'sw4'.tr,
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,

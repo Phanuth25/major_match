@@ -18,12 +18,20 @@ const Map<String, int> kAnswerScale = {
   'Strongly Agree': 5,
 };
 
+const Map<String, int> kAnswerKhmerScale = {
+  'មិនយល់ស្របទាំងស្រុង': 0,
+  'មិនយល់ស្រប': 0,
+  'អព្យាក្រឹត': 1,
+  'យល់ស្រប': 4,
+  'យល់ស្របទាំងស្រុង': 5,
+};
+
 class QuizScreen extends StatefulWidget {
   QuizScreen({super.key, required this.majorIds});
 
   final List<int> majorIds;
-final QuestionController controller = Get.find<QuestionController>();
-final SelectController scoreController = Get.find<SelectController>();
+  final QuestionController controller = Get.find<QuestionController>();
+  final SelectController scoreController = Get.find<SelectController>();
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -37,12 +45,10 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _isLoading = true;
   int _elapsedSeconds = 0;
   Timer? _quizTimer;
-  late final DateTime _startedAt;
 
   @override
   void initState() {
     super.initState();
-    _startedAt = DateTime.now();
     _startQuizTimer();
     _loadCurrentMajor();
   }
@@ -81,7 +87,7 @@ class _QuizScreenState extends State<QuizScreen> {
     });
 
     final majorId = widget.majorIds[_currentMajorIndex];
-    await widget.controller.fetchQuestionById(majorId);
+    await widget.controller.fetchQuestionById(majorId, Get.locale?.languageCode == 'km' ? 'km' : 'en');
 
     if (!mounted) return;
 
@@ -145,8 +151,8 @@ class _QuizScreenState extends State<QuizScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Answer honestly',
+                    Text(
+                      'q1'.tr,
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w500,
@@ -155,7 +161,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'There are no right or wrong answers.',
+                      'q2'.tr,
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.parchmentMuted(),
@@ -249,6 +255,7 @@ class _QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final answerScale = Get.locale?.languageCode == 'km' ? kAnswerKhmerScale : kAnswerScale;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -270,7 +277,7 @@ class _QuestionCard extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: kAnswerScale.keys.map((label) {
+            children: answerScale.keys.map((label) {
               final isSelected = selectedLabel == label;
               return ChoiceChip(
                 label: Text(

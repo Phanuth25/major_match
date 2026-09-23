@@ -14,6 +14,7 @@ import 'package:major_match2/feature/quiz/presentation/controller/attempt_contro
 import 'package:major_match2/feature/quiz/presentation/controller/attempt_final_controller.dart';
 import 'package:major_match2/feature/quiz/presentation/screen/history_screen.dart';
 import 'package:major_match2/feature/welcome/presentations/screens/welcome_screen.dart';
+import 'package:major_match2/translation/app_translations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -38,7 +39,16 @@ class MajorMatchApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isKhmer = Get.find<StorageService>().getUserLanguage() == 'ខ្មែរ';
+    final currentLocale = isKhmer
+        ? const Locale('km', 'KH')
+        : const Locale('en', 'US');
     return GetMaterialApp(
+      translations: AppTranslations(), // your translations
+      locale: currentLocale, // translations will be displayed in that locale
+      // translations will be displayed in that locale
+      fallbackLocale: currentLocale,
+      // specify the fallback locale in case an invalid locale is selected.
       title: 'MajorMatch',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -77,7 +87,6 @@ class MajorMatchApp extends StatelessWidget {
             );
           },
         ),
-
       ],
     );
   }

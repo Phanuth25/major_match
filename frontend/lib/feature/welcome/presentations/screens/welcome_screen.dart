@@ -166,25 +166,32 @@ class _Eyebrow extends StatelessWidget {
   }
 }
 
-class _Headline extends StatelessWidget {
+class _Headline extends StatefulWidget {
   const _Headline({required this.fontSize, this.alignStart = false});
 
   final double fontSize;
   final bool alignStart;
 
   @override
+  State<_Headline> createState() => _HeadlineState();
+}
+
+class _HeadlineState extends State<_Headline> {
+  @override
   Widget build(BuildContext context) {
-    final TextAlign align = alignStart ? TextAlign.left : TextAlign.center;
+    final TextAlign align = widget.alignStart
+        ? TextAlign.left
+        : TextAlign.center;
     return Column(
-      crossAxisAlignment: alignStart
+      crossAxisAlignment: widget.alignStart
           ? CrossAxisAlignment.start
           : CrossAxisAlignment.center,
       children: [
         Text(
-          'Find the major\nthat fits you.',
+          'w1'.tr,
           textAlign: align,
           style: TextStyle(
-            fontSize: fontSize,
+            fontSize: widget.fontSize,
             fontWeight: FontWeight.w500,
             height: 1.3,
             color: AppColors.parchment,
@@ -192,8 +199,7 @@ class _Headline extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          "Pick a few majors you're curious about. Answer a short quiz. "
-          'See which one actually fits.',
+          "w2".tr,
           textAlign: align,
           style: TextStyle(
             fontSize: 14,
@@ -206,13 +212,18 @@ class _Headline extends StatelessWidget {
   }
 }
 
-class _Actions extends StatelessWidget {
+class _Actions extends StatefulWidget {
   const _Actions({this.onGetStarted, this.onLogin, this.alignStart = false});
 
   final VoidCallback? onGetStarted;
   final VoidCallback? onLogin;
   final bool alignStart;
 
+  @override
+  State<_Actions> createState() => _ActionsState();
+}
+
+class _ActionsState extends State<_Actions> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -222,7 +233,7 @@ class _Actions extends StatelessWidget {
           : Get.find<StorageService>().getUserId();
 
       final Widget buttons = Column(
-        crossAxisAlignment: alignStart
+        crossAxisAlignment: widget.alignStart
             ? CrossAxisAlignment.start
             : CrossAxisAlignment.stretch,
         children: [
@@ -238,8 +249,8 @@ class _Actions extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
-                'Get started',
+              child: Text(
+                'w3'.tr,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
             ),
@@ -264,8 +275,8 @@ class _Actions extends StatelessWidget {
               ),
               child: Text(
                 userId != null && userId.isNotEmpty
-                    ? 'Continue'
-                    : 'I already have an account',
+                    ? 'w5'.tr
+                    : 'w4'.tr,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
             ),

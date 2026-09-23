@@ -10,13 +10,13 @@ class QuestionController extends GetxController {
   var errorMessage = ''.obs;
   var successMessage = ''.obs;
 
-  Future<void> fetchQuestionById(int id) async {
+  Future<void> fetchQuestionById(int id, String type) async {
     try {
       isLoading(true);
       errorMessage('');
       successMessage('');
 
-      final response = await ApiClient.instance.get('/question/$id');
+      final response = await ApiClient.instance.get('/question/$id?type=$type');
 
       if (response.statusCode == 200) {
         final questionResponse = QuestionResponse.fromJson(
@@ -25,6 +25,7 @@ class QuestionController extends GetxController {
 
         questions.assignAll(questionResponse.questions);
         debugPrint('Questions loaded: ${questions.length}');
+        debugPrint('Questions: ${questions.map((q) => q.toString()).toList()}');
         successMessage('Question loaded successfully');
       } else {
         errorMessage('Server error: ${response.statusCode}');

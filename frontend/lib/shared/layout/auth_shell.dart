@@ -12,7 +12,7 @@ import 'package:major_match2/feature/welcome/presentations/widgets/compass_widge
 ///
 /// Also handles the back button and keyboard-safe scrolling so each auth
 /// screen only has to provide its own [content].
-class AuthShell extends StatelessWidget {
+class AuthShell extends StatefulWidget {
   const AuthShell({
     super.key,
     required this.content,
@@ -25,13 +25,19 @@ class AuthShell extends StatelessWidget {
   static const double _wideBreakpoint = 900;
 
   @override
+  State<AuthShell> createState() => _AuthShellState();
+}
+
+class _AuthShellState extends State<AuthShell> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.ink,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final bool isWide = constraints.maxWidth >= _wideBreakpoint;
+            final bool isWide =
+                constraints.maxWidth >= AuthShell._wideBreakpoint;
 
             if (isWide) {
               return Row(
@@ -47,7 +53,7 @@ class AuthShell extends StatelessWidget {
                           const CompassWidget(size: 200),
                           const SizedBox(height: 32),
                           Text(
-                            brandHeadline,
+                            widget.brandHeadline,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 26,
@@ -69,7 +75,7 @@ class AuthShell extends StatelessWidget {
                       child: Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 420),
-                          child: content,
+                          child: widget.content,
                         ),
                       ),
                     ),
@@ -87,7 +93,7 @@ class AuthShell extends StatelessWidget {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 440),
-                    child: content,
+                    child: widget.content,
                   ),
                 ),
               ),

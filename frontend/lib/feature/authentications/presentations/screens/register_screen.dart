@@ -139,8 +139,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 24),
             _buildTitle(),
             const SizedBox(height: 8),
-            _buildSubtitle(),
-            const SizedBox(height: 24),
             _buildProfileImagePicker(),
             const SizedBox(height: 24),
             _buildNameField(),
@@ -162,7 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildBackButton() {
     return IconButton(
-      onPressed: () => Navigator.maybeOf(context)?.maybePop(),
+      onPressed: () => Get.toNamed('/welcome'),
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
       icon: const Icon(Icons.arrow_back, color: AppColors.parchment, size: 22),
@@ -170,16 +168,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildTitle() {
-    return const Text(
-      'Create your account',
-      style: TextStyle(fontSize: 26, fontWeight: FontWeight.w500, color: AppColors.parchment),
-    );
-  }
-
-  Widget _buildSubtitle() {
     return Text(
-      'Takes about a minute. You can start the quiz right after.',
-      style: TextStyle(fontSize: 14, height: 1.5, color: AppColors.parchmentMuted()),
+      'rw1'.tr,
+      style: TextStyle(
+        fontSize: 26,
+        fontWeight: FontWeight.w500,
+        color: AppColors.parchment,
+      ),
     );
   }
 
@@ -195,10 +190,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 CircleAvatar(
                   radius: 44,
                   backgroundColor: AppColors.parchment.withOpacity(0.08),
-                  backgroundImage:
-                      _profileImageBytes != null ? MemoryImage(_profileImageBytes!) : null,
+                  backgroundImage: _profileImageBytes != null
+                      ? MemoryImage(_profileImageBytes!)
+                      : null,
                   child: _profileImageBytes == null
-                      ? Icon(Icons.person, size: 40, color: AppColors.parchmentMuted())
+                      ? Icon(
+                          Icons.person,
+                          size: 40,
+                          color: AppColors.parchmentMuted(),
+                        )
                       : null,
                 ),
                 Positioned(
@@ -210,7 +210,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: AppColors.amber,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 16,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],
@@ -220,7 +224,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 8),
         Center(
           child: Text(
-            'Add a profile photo',
+            'rw2'.tr,
             style: TextStyle(fontSize: 12, color: AppColors.parchmentMuted()),
           ),
         ),
@@ -231,7 +235,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildNameField() {
     return AppTextField(
       key: _nameFieldKey,
-      label: 'Full name',
+      label: 'rw3'.tr,
       controller: _nameController,
       hintText: 'Alex Rivera',
       textInputAction: TextInputAction.next,
@@ -256,9 +260,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildPasswordField() {
     return AppTextField(
       key: _passwordFieldKey,
-      label: 'Password',
+      label: 'rw5'.tr,
       controller: _passwordController,
-      hintText: '8+ characters, upper, lower, number & symbol',
+      hintText: 'rw52'.tr,
       obscureText: true,
       textInputAction: TextInputAction.next,
       validator: Validators.password,
@@ -276,12 +280,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildConfirmPasswordField() {
     return AppTextField(
       key: _confirmPasswordFieldKey,
-      label: 'Confirm password',
+      label: 'rw6'.tr,
       controller: _confirmPasswordController,
-      hintText: 'Re-enter your password',
+      hintText: 'rw62'.tr.camelCase,
       obscureText: true,
       textInputAction: TextInputAction.done,
-      validator: (value) => Validators.confirmPassword(value, _passwordController.text),
+      validator: (value) =>
+          Validators.confirmPassword(value, _passwordController.text),
       onChanged: (_) => _confirmPasswordFieldKey.currentState?.validate(),
     );
   }
@@ -289,7 +294,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildSubmitButton() {
     return Obx(
       () => AppPrimaryButton(
-        label: widget.controller.isLoading.value ? 'Creating account...' : 'Create account',
+        label: widget.controller.isLoading.value
+            ? 'Creating account...'
+            : 'rw7'.tr,
         onPressed: widget.controller.isLoading.value ? null : _handleSubmit,
       ),
     );
@@ -301,14 +308,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         alignment: WrapAlignment.center,
         children: [
           Text(
-            'Already have an account? ',
+            'rw8'.tr,
             style: TextStyle(fontSize: 13, color: AppColors.parchmentMuted()),
           ),
+          SizedBox(width: 8),
           GestureDetector(
-            onTap: widget.onLogin,
-            child: const Text(
-              'Log in',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.amber),
+            onTap: widget.onLogin ?? () => Get.toNamed('/login'),
+            child:  Text(
+              'rw9'.tr,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: AppColors.amber,
+              ),
             ),
           ),
         ],
@@ -339,12 +351,21 @@ class _ImageSourceSheet extends StatelessWidget {
             // browsers, so we only offer it on native mobile platforms.
             if (showCameraOption)
               ListTile(
-                leading: const Icon(Icons.photo_camera, color: AppColors.parchment),
-                title: const Text('Take a photo', style: TextStyle(color: AppColors.parchment)),
+                leading: const Icon(
+                  Icons.photo_camera,
+                  color: AppColors.parchment,
+                ),
+                title: const Text(
+                  'Take a photo',
+                  style: TextStyle(color: AppColors.parchment),
+                ),
                 onTap: () => Navigator.pop(context, ImageSource.camera),
               ),
             ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColors.parchment),
+              leading: const Icon(
+                Icons.photo_library,
+                color: AppColors.parchment,
+              ),
               title: Text(
                 showCameraOption ? 'Choose from gallery' : 'Choose a file',
                 style: const TextStyle(color: AppColors.parchment),

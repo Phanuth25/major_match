@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_x/get.dart';
+import 'package:major_match2/core/services/local_storage.dart';
 import 'package:major_match2/core/theme/app_color.dart';
 import 'package:major_match2/feature/authentications/presentations/screens/controller/login_controller.dart';
 import 'package:major_match2/feature/major/presentation/controller/select_controller.dart';
@@ -26,6 +27,7 @@ class HomeScreen extends StatefulWidget {
   final int? recentScore;
   final VoidCallback? onStartQuiz;
   final int? seconds;
+
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -119,6 +121,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Get.toNamed('/history'),
               ),
               ListTile(
+                leading: const Icon(Icons.language_outlined),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 50),
+                title: const Text('Language'),
+                horizontalTitleGap: 35,
+                iconColor: AppColors.parchment,
+                textColor: AppColors.parchment,
+                onTap: () async {
+                  Get.dialog(
+                    AlertDialog(
+                      title: const Text('Select Language'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: const Text('English'),
+                            onTap: () {
+                              Get.updateLocale(const Locale('en', 'US'));
+                              Get.find<StorageService>().saveUserLanguage('English');
+                              Get.close();
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('ខ្មែរ'),
+                            onTap: () {
+                              Get.updateLocale(const Locale('km', 'KH'));
+                              Get.find<StorageService>().saveUserLanguage('ខ្មែរ');
+                              Get.close();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                  
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.logout_outlined),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 50),
                 title: const Text('logout'),
@@ -161,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'READY WHEN YOU ARE',
+                      Text(
+                        'hw1'.tr,
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -172,9 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        hasNoSelectedMajors
-                            ? 'You have not selected any quiz.'
-                            : 'Take the quiz for your ${widget.selectedMajors.length} majors',
+                        hasNoSelectedMajors ? 'hw2'.tr : 'hw3'.tr,
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -194,8 +231,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Text(
                           hasNoSelectedMajors
-                              ? 'Select major'
-                              : (hasTakenQuiz ? 'Retake quiz' : 'Start quiz'),
+                              ? 'hw3'.tr
+                              : (hasTakenQuiz ? 'hw31'.tr : 'hw32'.tr),
                         ),
                       ),
                     ],
@@ -205,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Selected majors
                 Text(
-                  'YOUR MAJORS',
+                  'hw4'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -235,8 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 22),
 
-                const Text(
-                  'MAJOR SCORES',
+                Text(
+                  'hw5'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -247,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10),
                 if (_majorScores.isEmpty)
                   Text(
-                    'Complete the quiz to see your scores.',
+                    'hw6'.tr,
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.parchmentMuted(),
@@ -328,16 +365,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onPressed: () {
                                     Get.dialog(
                                       AlertDialog(
-                                        title: const Text('Save Scores'),
-                                        content: const Text(
-                                          'Are you sure you want to save your scores? this score will be move to history',
+                                        title:  Text('hw9'.tr),
+                                        content:  Text(
+                                          'hw10'.tr,
                                         ),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
                                               Get.close();
                                             },
-                                            child: const Text('Cancel'),
+                                            child:  Text('hw13'.tr),
                                           ),
                                           ElevatedButton(
                                             onPressed: () async {
@@ -373,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     .value,
                                               );
                                             },
-                                            child: const Text('Save'),
+                                            child:  Text('hw14'.tr),
                                           ),
                                         ],
                                       ),
@@ -392,8 +429,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       vertical: 8,
                                     ),
                                   ),
-                                  label: const Text(
-                                    'Save',
+                                  label:  Text(
+                                    'hw7'.tr,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -408,16 +445,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onPressed: () {
                                     Get.dialog(
                                       AlertDialog(
-                                        title: const Text('Remove Scores'),
-                                        content: const Text(
-                                          'Are you sure you want to remove your scores? This action cannot be undone.',
-                                        ),
+                                        title:  Text('hw11'.tr),
+                                        content:  Text('hw12'.tr),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
                                               Get.close();
                                             },
-                                            child: const Text('No'),
+                                            child:  Text('hw13'.tr),
                                           ),
                                           ElevatedButton(
                                             onPressed: () async {
@@ -430,7 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 'Your quiz result has been discarded.',
                                               );
                                             },
-                                            child: const Text('Yes'),
+                                            child:  Text('hw14'.tr),
                                           ),
                                         ],
                                       ),
@@ -451,8 +486,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       vertical: 8,
                                     ),
                                   ),
-                                  label: const Text(
-                                    'Remove',
+                                  label:  Text(
+                                    'hw8'.tr,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white,

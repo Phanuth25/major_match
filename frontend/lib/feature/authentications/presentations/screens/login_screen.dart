@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              onPressed: () => Get.back(),
+              onPressed: () => Get.toNamed('/welcome'),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               icon: const Icon(
@@ -83,21 +83,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Welcome back',
+            Text(
+              'lw1'.tr,
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w500,
                 color: AppColors.parchment,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Log in to see your saved recommendations.',
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.5,
-                color: AppColors.parchmentMuted(),
               ),
             ),
             const SizedBox(height: 28),
@@ -118,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
               key: _passwordFieldKey,
               label: 'Password',
               controller: _passwordController,
-              hintText: 'Enter your password',
+              hintText: 'lw6'.tr,
               obscureText: true,
               textInputAction: TextInputAction.done,
               validator: (value) => (value == null || value.isEmpty)
@@ -142,9 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 28),
             Obx(
               () => AppPrimaryButton(
-                label: widget.controller.isLoading.value
-                    ? 'Logging in...'
-                    : 'Log in',
+                label: widget.controller.isLoading.value ? 'lw3'.tr : 'lw2'.tr,
                 onPressed: widget.controller.isLoading.value
                     ? null
                     : _handleSubmit,
@@ -157,16 +146,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: WrapAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account? ",
+                    "lw4".tr,
                     style: TextStyle(
                       fontSize: 13,
                       color: AppColors.parchmentMuted(),
                     ),
                   ),
+                  SizedBox(width: 8),
                   GestureDetector(
                     onTap: () => Get.offAndToNamed('/register'),
-                    child: const Text(
-                      'Sign up',
+                    child: Text(
+                      'lw5'.tr,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,

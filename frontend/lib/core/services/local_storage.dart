@@ -53,4 +53,12 @@ class StorageService {
     final list = _prefs.getStringList('selected_major_ids') ?? [];
     return list.map((id) => int.parse(id)).toList();
   }
+
+  Future<void> saveUserLanguage(String language) async {
+    await _prefs.setString('user_language', language);
+  }
+
+  String? getUserLanguage() {
+    return _prefs.getString('user_language');
+  }
 }
