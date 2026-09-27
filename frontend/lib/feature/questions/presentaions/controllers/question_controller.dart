@@ -16,7 +16,7 @@ class QuestionController extends GetxController {
       errorMessage('');
       successMessage('');
 
-      final response = await ApiClient.instance.get('/question/$id?type=$type');
+      final response = await ApiClient.instance.get('/question/$id/$type');
 
       if (response.statusCode == 200) {
         final questionResponse = QuestionResponse.fromJson(
@@ -25,6 +25,7 @@ class QuestionController extends GetxController {
 
         questions.assignAll(questionResponse.questions);
         debugPrint('Questions loaded: ${questions.length}');
+        debugPrint('Get.locale?.languageCode = ${Get.locale?.languageCode}');
         debugPrint('Questions: ${questions.map((q) => q.toString()).toList()}');
         successMessage('Question loaded successfully');
       } else {

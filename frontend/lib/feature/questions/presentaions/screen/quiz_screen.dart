@@ -26,6 +26,12 @@ const Map<String, int> kAnswerKhmerScale = {
   'យល់ស្របទាំងស្រុង': 5,
 };
 
+// Single source of truth for which answer-scale map is active, so the
+// question chips (labels shown/stored) and the scoring logic (labels read
+// back) can never fall out of sync with each other.
+Map<String, int> _answerScaleForCurrentLocale() =>
+    Get.locale?.languageCode == 'km' ? kAnswerKhmerScale : kAnswerScale;
+
 class QuizScreen extends StatefulWidget {
   QuizScreen({super.key, required this.majorIds});
 
@@ -109,8 +115,15 @@ class _QuizScreenState extends State<QuizScreen> {
       return;
     }
     //here we are at the last major, so we submit the scores
+
+    // FIX: use the same locale-aware answer map that the question chips
+    // used to store these labels, instead of always assuming English.
+    // Previously this always read from kAnswerScale, so when the app was
+    // in Khmer the stored Khmer labels weren't found, kAnswerScale[label]
+    // was null, and the `!` threw "Unexpected null value" on every tap.
+    final answerScale = _answerScaleForCurrentLocale();
     final scores = _answers.map(
-      (questionId, label) => MapEntry(questionId, kAnswerScale[label]!),
+      (questionId, label) => MapEntry(questionId, answerScale[label] ?? 0),
     );
     debugPrint('Final scores: $scores');
 
@@ -255,7 +268,7 @@ class _QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final answerScale = Get.locale?.languageCode == 'km' ? kAnswerKhmerScale : kAnswerScale;
+    final answerScale = _answerScaleForCurrentLocale();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

@@ -4,6 +4,6 @@ import { getQuestionById } from "../../controller/questions/question_controller.
 const router = express.Router();
 
 // GET /api/question/:id
-router.get("/question/:id", getQuestionById);
+router.get("/question/:id/:type", getQuestionById);
 
 export default router;

@@ -1,9 +1,10 @@
 import QuestionModel from "../../model/questions/question_model.js";
 
 export function getQuestionById(req, res) {
-  const { id } = req.params;
+  const { id, type } = req.params;
+  console.log("Received request for question with id: %s and type: %s", id, type);
 
-  QuestionModel.selectById(id, (err, result) => {
+  QuestionModel.selectById(id, type, (err, result) => {
     if (err) {
       console.error(err);
 
@@ -18,7 +19,7 @@ export function getQuestionById(req, res) {
       });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Question retrieved successfully",
       question: result,
     });
