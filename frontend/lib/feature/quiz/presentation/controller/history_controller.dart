@@ -63,7 +63,7 @@ class QuizHistoryController extends GetxController {
     try{
       final userId = _storageService.getUserId();
       debugPrint('Deleting quiz history for userId: $userId');
-      final response = await ApiClient.instance.delete('/history/$userId/$id');
+      final response = await ApiClient.instance.delete('/history/$userId');
 
       if (response.statusCode == 201) {
         results.clear(); // Clear the local list after successful deletion

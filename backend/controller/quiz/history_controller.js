@@ -1,7 +1,9 @@
 import HistoryModel from "../../model/quiz/history_model.js";
 
 export function history(req, res) {
-  const { user_id } = req.params;
+  console.log("req.params:", req.params); // Check what Express received
+  const user_id = req.params.user_id || req.params.id;
+  console.log("Extracted user_id:", user_id)
 
   if (!user_id) {
     return res.status(400).json({
