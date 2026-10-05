@@ -55,4 +55,27 @@ class QuizHistoryController extends GetxController {
       isLoading(false);
     }
   }
+
+  Future<void> deletehistory() async {
+    isLoading(true);
+    errorMessage(''); // Reset previous errors
+    successMessage(''); // Reset previous success messages
+    try{
+      final userId = _storageService.getUserId();
+      debugPrint('Deleting quiz history for userId: $userId');
+      final response = await ApiClient.instance.delete('/history/$userId/$id');
+
+      if (response.statusCode == 201) {
+        results.clear(); // Clear the local list after successful deletion
+        successMessage('Quiz history deleted successfully');
+      } else {
+        errorMessage('Server error: ${response.statusCode}');
+      }
+    }catch(e){
+      errorMessage('Failed to delete quiz history: ${e.toString()}');
+    }
+    finally{
+      isLoading(false);
+    }
+  }
 }

@@ -24,3 +24,20 @@ export function history(req, res) {
     });
   });
 }
+
+export function removeHistory(req, res) {
+  const { user_id, id } = req.params;
+  HistoryModel.removeHistory(user_id, id, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        message: "Internal server error ",
+      });
+    }
+
+    return res.status(201).json({
+      message: "Successfully",
+      results: result,
+    });
+  });
+}

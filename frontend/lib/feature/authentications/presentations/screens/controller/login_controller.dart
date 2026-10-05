@@ -17,6 +17,8 @@ class LoginController extends GetxController {
     loadSavedUserId();
   }
 
+  
+
   Future<void> loadSavedUserId() async {
     final savedUserId = Get.find<StorageService>().getUserId();
     if (savedUserId != null && savedUserId.isNotEmpty) {

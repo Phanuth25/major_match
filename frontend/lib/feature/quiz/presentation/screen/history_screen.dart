@@ -59,6 +59,31 @@ class _AttemptCard extends StatelessWidget {
 
   const _AttemptCard({required this.attemptNumber, required this.items});
 
+    Future<void> _onDeletePressed() async {
+    final confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('Delete attempt?'),
+        content: Text('Attempt $attemptNumber will be permanently removed.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(Get.context!).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(Get.context!).pop(true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // Replace QuizController with your controller class
+      //here
+      // Get.find<QuizController>().deleteAttempt(attemptNumber);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,9 +99,22 @@ class _AttemptCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Attempt $attemptNumber',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Attempt $attemptNumber',
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+               IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                tooltip: 'Delete attempt',
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: _onDeletePressed,
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           Wrap(
