@@ -2,8 +2,7 @@ import pool from "../../config/db.js";
 
 const HistoryModel = {
   history: (user_id, callback) => {
-    const sql =
-      "SELECT * FROM history_view WHERE user_id = ?";
+    const sql = "SELECT * FROM history_view WHERE user_id = ?";
     pool.query(sql, [user_id], callback);
   },
 

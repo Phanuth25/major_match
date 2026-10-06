@@ -19,7 +19,6 @@ export function history(req, res) {
         message: "Internal server error ",
       });
     }
-
     return res.status(201).json({
       message: "Successfully",
       results: result,
